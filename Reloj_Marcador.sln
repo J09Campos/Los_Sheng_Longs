@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36127.28 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reloj_Marcador", "Reloj_Marcador\Reloj_Marcador.csproj", "{C700D891-00EF-446A-850A-A831A620509E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reloj_Marcador.Entities", "Reloj_Marcador.Entities\Reloj_Marcador.Entities.csproj", "{6E82A6A8-9A3E-4B30-AC42-2BA0EDEE37E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reloj_Marcador.Repository", "Reloj_Marcador.Repository\Reloj_Marcador.Repository.csproj", "{5F2EA6BA-CEEA-4D69-9E35-AA3453A176E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reloj_Marcador.Services", "Reloj_Marcador.Services\Reloj_Marcador.Services.csproj", "{F9D885BC-F5C9-48AF-91CE-A2F1080F798E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C700D891-00EF-446A-850A-A831A620509E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C700D891-00EF-446A-850A-A831A620509E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C700D891-00EF-446A-850A-A831A620509E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C700D891-00EF-446A-850A-A831A620509E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E82A6A8-9A3E-4B30-AC42-2BA0EDEE37E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E82A6A8-9A3E-4B30-AC42-2BA0EDEE37E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E82A6A8-9A3E-4B30-AC42-2BA0EDEE37E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E82A6A8-9A3E-4B30-AC42-2BA0EDEE37E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F2EA6BA-CEEA-4D69-9E35-AA3453A176E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F2EA6BA-CEEA-4D69-9E35-AA3453A176E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F2EA6BA-CEEA-4D69-9E35-AA3453A176E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F2EA6BA-CEEA-4D69-9E35-AA3453A176E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9D885BC-F5C9-48AF-91CE-A2F1080F798E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9D885BC-F5C9-48AF-91CE-A2F1080F798E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9D885BC-F5C9-48AF-91CE-A2F1080F798E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9D885BC-F5C9-48AF-91CE-A2F1080F798E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3A3A21C3-ED69-4C34-A0A5-D4189D646158}
+	EndGlobalSection
+EndGlobal
