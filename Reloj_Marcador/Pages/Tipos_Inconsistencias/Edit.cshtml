@@ -1,0 +1,33 @@
+﻿@page
+@model Reloj_Marcador.Pages.Tipos_Inconsistencias.EditModel
+@{
+    ViewData["Title"] = "Editar Tipo Inconsistencias";
+}
+
+<h1>Editar Tipo Inconsistencias</h1>
+
+<h4>Persona</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="Inconsistencia.Id_Inconsistencia" class="control-label"></label>
+                <input asp-for="Inconsistencia.Id_Inconsistencia" class="form-control" readonly />
+                <span asp-validation-for="Inconsistencia.Id_Inconsistencia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Inconsistencia.Nombre_Inconsistencia" class="control-label"></label>
+                <input asp-for="Inconsistencia.Nombre_Inconsistencia" class="form-control" />
+                <span asp-validation-for="Inconsistencia.Nombre_Inconsistencia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Volver a la lista</a>
+</div>
