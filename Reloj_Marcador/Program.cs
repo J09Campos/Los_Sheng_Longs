@@ -37,15 +37,18 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
                 var returnUrl = ctx.Request.Path;
 
-                // Si no tiene sesión iniciada
-                if (!ctx.Request.Cookies.ContainsKey(".AspNetCore.Cookies"))
+                // Si existe la cookie en el request pero el usuario no está autenticado va a ser expirada
+
+                if (ctx.Request.Cookies.ContainsKey(".AspNetCore.Cookies") &&
+                    (ctx.HttpContext.User?.Identity == null || !ctx.HttpContext.User.Identity.IsAuthenticated))
                 {
-                    ctx.Response.Redirect("/Login/Login?unauthenticated=true");
+                    ctx.Response.Redirect("/Login/Login?expired=true");
                 }
                 else
                 {
-                    // Sesión expirada
-                    ctx.Response.Redirect("/Login/Login?expired=true");
+                    // Nunca estuvo logueado
+
+                    ctx.Response.Redirect("/Login/Login?unauthenticated=true");
                 }
 
                 return Task.CompletedTask;
