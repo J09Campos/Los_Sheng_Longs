@@ -1,0 +1,28 @@
+﻿@page
+@model Reloj_Marcador.Pages.Tipos_Inconsistencias.CreateModel
+@{
+    ViewData["Title"] = "Crear Tipo Incosistencia";
+}
+
+<h1>Crear Tipo Incosistencia</h1>
+
+<h4>Tipo Inconsistencia</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="Inconsistencia.Nombre_Inconsistencia" class="control-label"></label>
+                <input asp-for="Inconsistencia.Nombre_Inconsistencia" class="form-control" />
+                <span asp-validation-for="Inconsistencia.Nombre_Inconsistencia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Crear" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Volver a la lista</a>
+</div>
