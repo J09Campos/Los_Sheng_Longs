@@ -10,6 +10,9 @@ builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
 builder.Services.AddScoped<InconsistenciasRepository>();
 builder.Services.AddScoped<IInconsistenciasService, InconsisteciasService>();
 
+builder.Services.AddScoped<MarcasRepository>();
+builder.Services.AddScoped<IMarcasService, MarcasService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
