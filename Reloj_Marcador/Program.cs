@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 
-// Inyección de Dependencias (Utilización de Instancias de Clase sin Usarlas de Maneras Explicitas)
+// Inyecciï¿½n de Dependencias (Utilizaciï¿½n de Instancias de Clase sin Usarlas de Maneras Explicitas)
 
 builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
 
@@ -18,7 +18,7 @@ builder.Services.AddScoped<LoginRepository>();
 
 builder.Services.AddScoped<ILoginService, LoginService>();
 
-// Agregar soporte para cache distribuido y sesión
+// Agregar soporte para cache distribuido y sesiï¿½n
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -37,7 +37,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
                 var returnUrl = ctx.Request.Path;
 
-                // Si existe la cookie en el request pero el usuario no está autenticado va a ser expirada
+                // Si existe la cookie en el request pero el usuario no estï¿½ autenticado va a ser expirada
 
                 if (ctx.Request.Cookies.ContainsKey(".AspNetCore.Cookies") &&
                     (ctx.HttpContext.User?.Identity == null || !ctx.HttpContext.User.Identity.IsAuthenticated))
@@ -76,7 +76,7 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
-// Para iniciar en la página de login de Primero
+// Para iniciar en la pï¿½gina de login de Primero
 
 app.MapGet("/", context =>
 {
