@@ -1,0 +1,67 @@
+﻿@page
+@model Reloj_Marcador.Pages.Funcionarios.CreateModel
+
+<h1>Crear Funcionario</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div class="form-group">
+                <label>Tipo de Identificación</label>
+                <select asp-for="Funcionario.TipoIdentificacion" class="form-control"
+                        asp-items="@(new SelectList(Model.TiposIdentificacion, "ID_TipoIdentificacion", "Nombre_TipoIdentificacion"))">
+                    <option value="">Seleccione...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Identificación</label>
+                <input asp-for="Funcionario.Identificacion" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Nombre</label>
+                <input asp-for="Funcionario.Nombre" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Apellido</label>
+                <input asp-for="Funcionario.Apellido" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Correo</label>
+                <input asp-for="Funcionario.Correo" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input asp-for="Funcionario.Contrasena" type="password" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Rol</label>
+                <select asp-for="Funcionario.ID_Rol" class="form-control"
+                        asp-items="@(new SelectList(Model.Roles, "ID_Rol", "Nombre_Rol"))">
+                    <option value="">Seleccione...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Estado</label>
+                <select asp-for="Funcionario.Estado" class="form-control"
+                        asp-items="@(new SelectList(Model.Estados, "Valor", "Valor"))">
+                    <option value="">Seleccione...</option>
+                </select>
+            </div>
+
+            <div class="form-group mt-3">
+                <button type="submit" class="btn btn-primary">Crear</button>
+                <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
