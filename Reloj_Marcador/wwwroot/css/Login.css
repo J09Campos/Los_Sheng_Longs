@@ -1,0 +1,23 @@
+﻿.logo-icon {
+    width: 8rem; /* Tamaño similar a fa-5x */
+    height: 8rem; /* Mantener proporción cuadrada */
+    object-fit: contain; /* Ajusta la imagen dentro del contenedor */
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    filter: brightness(0) invert(1); /* Si quieres que sea blanco como el icono */
+}
+
+/* Centrar todo el login */
+body {
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    min-height: 100vh; 
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+}
+
+/* Ajuste para que la tarjeta no se comprima demasiado */
+.card {
+    width: 100%;
+    max-width: 900px; 
+}

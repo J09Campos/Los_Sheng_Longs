@@ -74,6 +74,8 @@ namespace Reloj_Marcador.Repository
                 byte resultadoByte = parametros.Get<byte>("p_Resultado");
                 bool resultado = resultadoByte == 1;
 
+                inconsistencia.Mensaje = mensaje;
+                inconsistencia.Resultado = resultado;
 
                 return (Convert.ToBoolean(resultado), mensaje);
             }

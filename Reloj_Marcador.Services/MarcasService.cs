@@ -62,18 +62,6 @@ namespace Reloj_Marcador.Services
                 return false;
             }
 
-            // Validar área
-            if (string.IsNullOrWhiteSpace(marca.Id_Area))
-            {
-                marca.Mensaje = "El área es obligatoria.";
-                return false;
-            }
-            if (marca.Id_Area.Length > 10)
-            {
-                marca.Mensaje = "El área no debe exceder 10 caracteres.";
-                return false;
-            }
-
             // Validar descripción
             if (string.IsNullOrWhiteSpace(marca.Descripcion))
             {

@@ -43,9 +43,12 @@ namespace Reloj_Marcador.Pages.Tipos_Inconsistencias
                 {
                     TempData["ModalTitle"] = "Operación Fallida";
                     TempData["ModalMessage"] = Inconsistencia.Mensaje;
-                }
 
-                return RedirectToPage("Index");
+                     return Page();
+
+            }
+
+            return RedirectToPage("Index");
             }
         }
     }

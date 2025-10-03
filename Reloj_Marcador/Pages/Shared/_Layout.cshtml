@@ -1,75 +1,283 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Reloj_Marcador</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Reloj_Marcador.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/css/bootstrap.min.css" />
+    <title>@ViewData["Title"]</title>
+
     <!-- SB Admin 2 CSS (Bootstrap) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" rel="stylesheet" />
- 
 
+    <!-- Font Awesome Iconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+
+    <!-- CSS para Bugs de Plantillas-->
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="~/css/layout.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/RelojMarcador.styles.css" asp-append-version="true" />
 
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Reloj_Marcador</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Tipos_Inconsistencias/Index">Tipo Inconsistencias</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Marca_Entrada_Salida/Index">Marcar Entrada-Salida</a>
-                        </li>
-                    </ul>
+<body id="page-top">
+
+
+    <div id="wrapper">
+
+        <!-- Barra lateral (Sidebar) -->
+
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Marca del Sidebar (Logo / Nombre) -->
+
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-page="#">
+                <img src="~/imagenes/Logo.png" alt="Logo" class="sidebar-logo" />
+            </a>
+
+            <!-- Separador -->
+
+            <li class="nav-item">
+                <hr class="sidebar-divider my-0" />
+            </li>
+
+
+            <li class="nav-item active">
+                <a class="nav-link" asp-page="#">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+
+
+
+            <li class="nav-item">
+                <hr class="sidebar-divider" />
+            </li>
+
+
+            <!-- Encabezado -->
+
+            <li class="nav-item sidebar-heading">
+                <span>Mantenimientos</span>
+            </li>
+
+            <!-- Menú Desplegable -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsuarios" aria-expanded="true" aria-controls="collapseUsuarios">
+                    <i class="fas fa-fw fa-folder"></i>
+
+                    <span>Catálogos</span>
+                </a>
+                <div id="collapseUsuarios" class="collapse" aria-labelledby="headingUsuarios"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Administración:</h6>
+                        <a class="collapse-item" asp-page="#">Administración de Roles</a>
+                        <a class="collapse-item" asp-page="#">Administración de Tipos de Identificación</a>
+                        <a class="collapse-item" asp-page="#">Administración de Áreas</a>
+                        <a class="collapse-item" asp-page="#">Administración de Motivos</a>
+                        <a class="collapse-item" asp-page="/Tipos_Inconsistencias/Index">Administración de Tipos de Inconsistencia</a>
+                    </div>
                 </div>
+            </li>
+
+            <!-- Menú Despegable - Funcionarios -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFuncionarios" aria-expanded="true" aria-controls="collapseFuncionarios ">
+                    <i class="fas fa-fw fa-users"></i>
+
+                    <span>Funcionarios</span>
+                </a>
+                <div id="collapseFuncionarios" class="collapse" aria-labelledby="headingFuncionarios"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Gestión de Funcionarios:</h6>
+                        <a class="collapse-item" asp-page="">Administración de Funcionarios</a>
+
+                    </div>
+                </div>
+            </li>
+
+
+            <li class="nav-item">
+                <hr class="sidebar-divider" />
+            </li>
+
+
+            <li class="nav-item sidebar-heading">
+                <span>Reportes</span>
+            </li>
+
+
+
+            <!-- Menú Desplegable Marcas -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseConfig"
+                   aria-expanded="true" aria-controls="collapseConfig">
+                    <i class="fas fa-fw fa-clock"></i>
+                    <span>Registro de Marcas</span>
+                </a>
+                <div id="collapseConfig" class="collapse" aria-labelledby="headingConfig"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Marcas:</h6>
+                        <a class="collapse-item" asp-page="/Marca_Entrada_Salida/Index">Marcas de Entrada y Salida</a>
+
+                    </div>
+                </div>
+            </li>
+
+
+            <li class="nav-item">
+                <hr class="sidebar-divider d-none d-md-block" />
+            </li>
+
+            <!-- Botón para ocultar/mostrar el Sidebar -->
+
+            <li class="nav-item text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </li>
+
+        </ul>
+
+
+        <!-- Contenedor del contenido principal -->
+
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Contenido principal -->
+
+            <div id="content">
+
+                <!-- Barra superior (Topbar) -->
+
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Botón para toggle del Sidebar en pantallas pequeñas -->
+
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+
+
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">@User.Identity?.Name</span>
+                                <img class="img-profile rounded-circle"
+                                     src="~/imagenes/Perfil.png" alt="Foto de perfil">
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Cerrar Sesión
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+
+
+                <div class="container-fluid">
+                    <main role="main" class="pb-3">
+                        @RenderBody()
+                    </main>
+                </div>
+
+
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+        </div>
+
+
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Reloj_Marcador - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
-    </footer>
+    <!-- Modal Cerrar Sesión-->
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">¿Listo para salir?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Seleccione "Cerrar Sesión" a continuación si está listo para finalizar su sesión actual.
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+
+                    <!-- Este form hace POST al handler Logout -->
+
+                    <form method="post" asp-page="/Login/Login" asp-page-handler="Logout">
+                        <button type="submit" class="btn btn-primary">Cerrar Sesión</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
     <!-- JavaScript principal de Bootstrap -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
 
-    <!-- SB Admin 2 JS -->
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js"></script>
-
     <!-- Plugin de animaciones para jQuery -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
 
+    <!-- SB Admin 2 JS -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js"></script>
+
+    <!-- Java Script Personalizado-->
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- Modal de sesión expirada -->
+
+    <div class="modal fade" id="sessionExpiredModal" tabindex="-1" role="dialog" aria-labelledby="sessionExpiredModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content border-left-primary shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title font-weight-bold" id="sessionExpiredModalLabel">
+                        <i class="fas fa-clock mr-2"></i> Sesión Expirada
+                    </h5>
+                </div>
+                <div class="modal-body text-gray-800">
+                    Su sesión ha expirado por inactividad. Por favor, vuelva a iniciar sesión.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="redirectLoginBtn">
+                        <i class="fas fa-sign-in-alt mr-1"></i> Ir al Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/expirationscript.js"></script>
+
 </body>
 </html>

@@ -1,51 +1,112 @@
 ﻿@page
 @model Reloj_Marcador.Pages.Tipos_Inconsistencias.IndexModel
 @{
+    Layout = "_Layout";
     ViewData["Title"] = "Tipos Inconsistencias";
 }
+<link href="~/css/areas.css" rel="stylesheet" />
 
 <h1>Tipos de Inconsistencias</h1>
 
 <p>
-    <a class="btn btn-primary" asp-page="Create">Nuevo tipo de Inconsistencia</a>
+    <a class="btn btn-primary" asp-page="Create">Nuevo</a>
 </p>
 
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>Id_Inconsistencia</th>
-            <th>Nombre_Inconsistencia</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Inconsistencias)
-        {
+<!-- Tabla -->
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" style="width: 100%;">
+        <thead style="background-color: #36404a; color: white;">
             <tr>
-                <td>@item.Id_Inconsistencia</td>
-                <td>@item.Nombre_Inconsistencia</td>
-                <td>
-                    <a asp-page="Edit" asp-route-id="@item.Id_Inconsistencia">Editar</a> |
-                    <button type="button"
-                            class="btn btn-danger"
-                            data-bs-toggle="modal"
-                            data-bs-target="#deleteModal"
-                            data-id="@item.Id_Inconsistencia"
-                            data-nombre="@item.Nombre_Inconsistencia">
-                        Eliminar
-                    </button>
-                </td>
+                <th style="width: 20%;" class="text-center">Id Inconsistencia</th>
+                <th>Nombre de la Inconsistencia</th>
+                <th style="width: 15%;" class="text-center">Acciones</th>
             </tr>
-        }
-    </tbody>
-</table>
-<!-- Modal para mensajes -->
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Inconsistencias)
+            {
+                <tr>
+                    <td class="text-center">@item.Id_Inconsistencia</td>
+                    <td>@item.Nombre_Inconsistencia</td>
+                    <td class="text-center">
+                        <a asp-page="Edit" asp-route-id="@item.Id_Inconsistencia"
+                           class="btn btn-primary btn-circle btn-sm"
+                           title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <button type="button"
+                                class="btn btn-danger btn-circle btn-sm"
+                                data-toggle="modal"
+                                data-target="#deleteModal"
+                                data-id="@item.Id_Inconsistencia"
+                                data-nombre="@item.Nombre_Inconsistencia"
+                                title="Eliminar">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link" asp-route-pageNumber="@(Model.CurrentPage - 1)">Anterior</a>
+            </li>
+
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                    <a class="page-link" asp-route-pageNumber="@i">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" asp-route-pageNumber="@(Model.CurrentPage + 1)">Siguiente</a>
+            </li>
+        </ul>
+    </nav>
+<!-- Modal Eliminar -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-left-primary shadow">
+
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title font-weight-bold" id="deleteModalLabel">
+                    <i class="fas fa-exclamation-triangle mr-2"></i> Confirmar eliminación
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body text-gray-800">
+                ¿Realmente desea eliminar el elemento seleccionado?
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times mr-1"></i> No
+                </button>
+                <form method="post" asp-page-handler="Delete">
+                    <input type="hidden" name="IdInconsistencia" id="idInconsistencia" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt mr-1"></i> Sí
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Mensajes del sistema -->
 <div class="modal fade" id="systemMessageModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">@TempData.Peek("ModalTitle")</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Cerrar">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -53,45 +114,28 @@
                 @TempData.Peek("ModalMessage")
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cerrar</button>
             </div>
-        </div>
-    </div>
-</div>
-<!-- Modal para Eliminar -->
-
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content border-left-primary shadow">
-
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title font-weight-bold" id="deleteModalLabel">
-                    <i class="fas fa-exclamation-triangle me-2"></i> Confirmar eliminación
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-
-            <div class="modal-body text-gray-800">
-                ¿Realmente desea eliminar el elemento seleccionado? <strong id="nombreInconsistencia"></strong>?
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i> No
-                </button>
-                <form method="post" asp-page-handler="Delete">
-                    <input type="hidden" name="IdInconsistencia" id="idInconsistencia" />
-                    <button type="submit" class="btn btn-danger">Sí</button>
-                </form>
-
-            </div>
-
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
+        // Modal eliminar
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var nombre = button.data('nombre');
+
+            var modal = $(this);
+            modal.find('#idInconsistencia').val(id);
+            modal.find('#nombreInconsistencia').text(nombre);
+        });
+    </script>
+    <script>
+
+        // Modal mensaje del sistema
         $(document).ready(function () {
             var modalMessage = "@(TempData["ModalMessage"] ?? "")";
             if (modalMessage.length > 0) {
@@ -99,21 +143,4 @@
             }
         });
     </script>
-    <script>
-        var deleteModal = document.getElementById('deleteModal');
-        deleteModal.addEventListener('show.bs.modal', function (event) {
-            // Botón que disparó el modal
-            var button = event.relatedTarget;
-            var id = button.getAttribute('data-id');
-            var nombre = button.getAttribute('data-nombre');
-
-            // Asignar valores al modal
-            document.getElementById('idInconsistencia').value = id;
-            document.getElementById('nombreInconsistencia').textContent = nombre;
-        });
-    </script>
-
 }
-
-
-

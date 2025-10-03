@@ -18,10 +18,26 @@ namespace Reloj_Marcador.Pages.Tipos_Inconsistencias
 
         [BindProperty]
         public Inconsistencias Inconsistencia { get; set; }
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
 
-        public async Task OnGetAsync()
+        private const int PageSize = 10;
+
+        public async Task OnGetAsync(int pageNumber = 1)
         {
-            Inconsistencias = await _inconsistenciasService.GetAllAsync();
+            var allInconsistencias = await _inconsistenciasService.GetAllAsync();
+
+            // Calculamos la paginación
+            int totalRecords = allInconsistencias.Count();
+            TotalPages = (int)Math.Ceiling(totalRecords / (double)PageSize);
+            CurrentPage = pageNumber;
+
+            Inconsistencias = allInconsistencias
+                .OrderBy(a => a.Id_Inconsistencia)
+                .Skip((pageNumber - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
+
         }
         public async Task<IActionResult> OnPostDeleteAsync(int IdInconsistencia)
         {
