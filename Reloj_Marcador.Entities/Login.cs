@@ -10,11 +10,11 @@ namespace Reloj_Marcador.Entities
     public class Login
     {
 
-       
-        public string Identificacion { get; set; }
-        public string Nombre_Completo { get; set; }
-        public string Contrasena { get; set; }
-        public string Mensaje { get; set; }
+
+        public string? Identificacion { get; set; }
+        public string? Nombre_Completo { get; set; }
+        public string? Contrasena { get; set; }
+        public string? Mensaje { get; set; }
 
 
     }

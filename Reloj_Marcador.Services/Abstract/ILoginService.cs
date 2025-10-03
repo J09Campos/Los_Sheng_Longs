@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Reloj_Marcador.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace Reloj_Marcador.Services.Abstract
     public interface ILoginService
     {
 
-        Task<(string Mensaje, string? NombreCompleto)> LoginAsync(string usuario, string contrasena);
+        Task<Login> LoginAsync(string usuario, string contrasena);
 
 
     }

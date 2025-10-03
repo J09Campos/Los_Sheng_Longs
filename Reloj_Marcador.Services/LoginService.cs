@@ -1,4 +1,5 @@
-﻿using Reloj_Marcador.Repository;
+﻿using Reloj_Marcador.Entities;
+using Reloj_Marcador.Repository;
 using Reloj_Marcador.Services.Abstract;
 using System;
 using System.Collections.Generic;
@@ -18,31 +19,48 @@ namespace Reloj_Marcador.Services
             _loginRepository = loginRepository;
         }
 
-        public async Task<(string Mensaje, string? NombreCompleto)> LoginAsync(string usuario, string contrasena)
+        public async Task<Login> LoginAsync(string usuario, string contrasena)
         {
 
-            
             if (string.IsNullOrWhiteSpace(usuario) || string.IsNullOrWhiteSpace(contrasena))
             {
-                return ("Usuario y/o contraseña incorrectos.", null);
+                return new Login
+                {
+                    Identificacion = usuario,
+                    Contrasena = contrasena,
+                    Nombre_Completo = string.Empty,
+                    Mensaje = "Usuario y/o contraseña incorrectos."
+                };
             }
 
             if (usuario.Length > 255)
             {
-                return ("El usuario no puede tener más de 255 caracteres.", null);
+                return new Login
+                {
+                    Identificacion = usuario,
+                    Contrasena = contrasena,
+                    Nombre_Completo = string.Empty,
+                    Mensaje = "El usuario no puede tener más de 255 caracteres."
+                };
             }
-
 
             if (contrasena.Length > 255)
             {
-                return ("La contraseña no puede tener más de 255 caracteres.", null);
+                return new Login
+                {
+                    Identificacion = usuario,
+                    Contrasena = contrasena,
+                    Nombre_Completo = string.Empty,
+                    Mensaje = "La contraseña no puede tener más de 255 caracteres."
+                };
             }
+
 
             var resultado = await _loginRepository.LoginAsync(usuario, contrasena);
 
-            
             return resultado;
         }
+
 
     }
 }

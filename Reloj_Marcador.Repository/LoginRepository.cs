@@ -20,7 +20,7 @@ namespace Reloj_Marcador.Repository
             _dbConnectionFactory = dbConnectionFactory;
         }
 
-        public async Task<(string Mensaje, string? NombreCompleto)> LoginAsync(string usuario, string contrasena)
+        public async Task<Login> LoginAsync(string usuario, string contrasena)
         {
             using var connection = _dbConnectionFactory.CreateConnection();
 
@@ -37,13 +37,19 @@ namespace Reloj_Marcador.Repository
             string mensaje = parameters.Get<string>("p_Mensaje");
             string? nombreCompleto = parameters.Get<string>("p_Nombre_Completo");
 
-            return (mensaje, nombreCompleto);
+            return new Login
+            {
+                Identificacion = usuario,
+                Nombre_Completo = nombreCompleto ?? string.Empty,
+                Contrasena = contrasenaCifrada,
+                Mensaje = mensaje
+            };
         }
 
 
-        private static readonly string Key = "0123456789abcdef"; 
+        private static readonly string Key = "0123456789abcdef";
         private static readonly string IV = "abcdef0123456789";
-        
+
         // Método  para Encriptar
 
         public static string Encrypt(string plainText)
@@ -100,9 +106,9 @@ namespace Reloj_Marcador.Repository
                 return srDecrypt.ReadToEnd();
             }
         }
-    
 
 
 
-}
+
+    }
 }
