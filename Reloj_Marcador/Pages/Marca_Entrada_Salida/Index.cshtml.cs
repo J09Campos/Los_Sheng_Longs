@@ -3,28 +3,82 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Reloj_Marcador.Entities;
 
-namespace Reloj_Marcador.Pages.Marca_Entrada_Salida;
-
-public class IndexModel : PageModel
+namespace Reloj_Marcador.Pages.Marca_Entrada_Salida
 {
-    public readonly Services.Abstract.IMarcasService _marcasService;
-
-    public IndexModel(Services.Abstract.IMarcasService marcasService)
+    public class IndexModel : PageModel
     {
-        _marcasService = marcasService;
-        Marca = new Marcas();
+        private readonly Services.Abstract.IMarcasService _marcasService;
 
-    }
-    // Propiedad para cargar opciones en el combo
-    public SelectList Areas { get; set; }
+        public IndexModel(Services.Abstract.IMarcasService marcasService)
+        {
+            _marcasService = marcasService;
+            Marca = new Marcas();
+            AreasLista = new SelectList(Enumerable.Empty<Areas>(), "Id_Area", "Nombre_Area");
+        }
 
-    // Propiedad para el valor seleccionado
-    [BindProperty]
-    public Marcas Marca { get; set; }
+        // Propiedad bind para el formulario
+        [BindProperty]
+        public Marcas Marca { get; set; }
 
-    public async Task OnGetAsync(string id = "305690396")
-    {
-        var lista = await _marcasService.GetAllAreaByID(id);
-        Areas = new SelectList(lista);
+        // Propiedad para el combo de áreas
+        public SelectList AreasLista { get; set; }
+
+
+        // Handler que devuelve las áreas según la identificación
+        public async Task<JsonResult> OnGetObtenerIdAsync(string identificacion)
+        {
+            List<SelectListItem> selectList;
+
+            if (string.IsNullOrEmpty(identificacion))
+            {
+                // Retorna solo la opción "--Seleccione--"
+                selectList = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "", Text = "--Seleccione--" }
+                };
+            }
+            else
+            {
+                var lista = await _marcasService.GetAllAreaByID(identificacion);
+
+                selectList = lista.Select(a => new SelectListItem
+                {
+                    Value = a.Item1,
+                    Text = a.Item2
+                }).ToList();
+
+                // Siempre agregar la opción "--Seleccione--" al inicio
+                selectList.Insert(0, new SelectListItem { Value = "", Text = "--Seleccione--" });
+            }
+
+            return new JsonResult(selectList);
+        }
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            // Aquí recibimos la tupla que devuelve ValidateUser
+            var (resultado, mensaje) = await _marcasService.ValidateUser(Marca);
+
+            if (!resultado)
+            {
+                TempData["ModalTitle"] = "Operación Fallida";
+                TempData["ModalMessage"] = mensaje;
+                return Page();
+            }
+
+            // Obtener la hora del servidor
+            var horaServidor = DateTime.Now.ToString("HH:mm:ss"); 
+
+            // Si resultado == true
+            TempData["ModalTitle"] = "Operación Exitosa";
+            TempData["ModalMessage"] = $"Hora Servidor: {horaServidor}";
+
+            return RedirectToPage("Index");
+        }
     }
 }
+

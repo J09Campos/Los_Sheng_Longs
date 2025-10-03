@@ -14,5 +14,7 @@ namespace Reloj_Marcador.Entities
         public string? Id_Area { get; set; }
         public string? Descripcion {  get; set; } 
         public string? Tipo_Marca { get; set; }
+        public string? Mensaje { get; set; }
+        public bool? Resultado { get; set; }
     }
 }

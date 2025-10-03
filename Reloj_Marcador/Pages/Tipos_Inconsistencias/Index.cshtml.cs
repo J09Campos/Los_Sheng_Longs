@@ -16,9 +16,19 @@ namespace Reloj_Marcador.Pages.Tipos_Inconsistencias
 
         public IEnumerable<Inconsistencias> Inconsistencias { get; set; }
 
+        [BindProperty]
+        public Inconsistencias Inconsistencia { get; set; }
+
         public async Task OnGetAsync()
         {
             Inconsistencias = await _inconsistenciasService.GetAllAsync();
+        }
+        public async Task<IActionResult> OnPostDeleteAsync(int IdInconsistencia)
+        {
+            Inconsistencia.Id_Inconsistencia = IdInconsistencia;
+            await _inconsistenciasService.CRUDAsync(Inconsistencia, "Eliminar");
+
+            return RedirectToPage();
         }
     }
 }

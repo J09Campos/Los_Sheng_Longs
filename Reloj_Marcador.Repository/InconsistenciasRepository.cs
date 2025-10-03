@@ -48,7 +48,6 @@ namespace Reloj_Marcador.Repository
                  commandType: CommandType.StoredProcedure
                  );
 
-                // Retornar primer registro o null
                 return lista.FirstOrDefault();
             }
         }

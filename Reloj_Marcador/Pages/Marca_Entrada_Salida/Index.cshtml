@@ -11,38 +11,92 @@
     <div class="col-md-4">
         <form method="post">
             <div class="form-group">
-                <label asp-for="Marca.Identificacion" class="control-label"></label>
-                <input asp-for="Marca.Identificacion" class="form-control" readonly />
-                <span asp-validation-for="Marca.Identificacion" class="text-danger"></span>
+                <label asp-for="Marca.Identificacion">Usuario</label>
+                <input asp-for="Marca.Identificacion" id="IdentificacionInput" class="form-control" />
             </div>
+
             <div class="form-group">
-                <label asp-for="Marca.Contrasena" class="control-label"></label>
+                <label asp-for="Marca.Contrasena">Contraseña</label>
                 <input asp-for="Marca.Contrasena" class="form-control" />
                 <span asp-validation-for="Marca.Contrasena" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Marca" class="control-label"></label>
-                <select asp-for="Marca" class="form-control" asp-items="Model.Areas"></select>
-                <span asp-validation-for="Marca" class="text-danger"></span>
+                <label>Área</label>
+                <select asp-for="Marca.Id_Area" asp-items="Model.AreasLista" id="AreasCombo" class="form-control">
+                    <option value=""></option>
+                </select>
             </div>
+
             <div class="form-group">
-                <label asp-for="Marca.Descripcion" class="control-label"></label>
+                <label asp-for="Marca.Descripcion">Descripción (opcional)</label>
                 <input asp-for="Marca.Descripcion" class="form-control" />
                 <span asp-validation-for="Marca.Descripcion" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Marca.Tipo_Marca" class="control-label"></label>
-                <input asp-for="Marca.Tipo_Marca" class="form-control" />
-                <span asp-validation-for="Marca.Tipo_Marca" class="text-danger"></span>
+                <label>Tipo Marca</label>
+                <select asp-for="Marca.Tipo_Marca" id="TipoMarca" class="form-control">
+                    <option value="Entrada">Entrada</option>
+                    <option value="Salida">Salida</option>
+
+                </select>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Marcar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-page="Index">Volver a la lista</a>
+<!-- Modal para mensajes -->
+<div class="modal fade" id="systemMessageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@TempData.Peek("ModalTitle")</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @TempData.Peek("ModalMessage")
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
 </div>
 
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var modalMessage = "@(TempData["ModalMessage"] ?? "")";
+            if (modalMessage.length > 0) {
+                $("#systemMessageModal").modal("show");
+            }
+        });
+    </script>
+    <!--Scrip para cargar el combo box-->
+    <script>
+                document.getElementById("IdentificacionInput").addEventListener("blur", function() {
+            var identificacion = this.value; 
+
+            fetch(`?handler=ObtenerId&identificacion=${encodeURIComponent(identificacion)}`)
+                .then(response => response.json())
+                .then(data => {
+                    var combo = document.getElementById("AreasCombo");
+                    combo.innerHTML = ''; 
+                    data.forEach(function(area) {
+                        var option = document.createElement("option");
+                        option.value = area.value;
+                        option.text = area.text;
+                        combo.appendChild(option);
+                    });
+                })
+                .catch(error => console.error(error));
+        });
+
+    </script>
+}

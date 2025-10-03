@@ -39,6 +39,12 @@ namespace Reloj_Marcador.Pages.Tipos_Inconsistencias
 
                 await _inconsistenciasService.CRUDAsync(Inconsistencia, "Actualizar");
 
+                if (!Inconsistencia.Resultado.HasValue)
+                {
+                    TempData["ModalTitle"] = "Operación Fallida";
+                    TempData["ModalMessage"] = Inconsistencia.Mensaje;
+                }
+
                 return RedirectToPage("Index");
             }
         }
