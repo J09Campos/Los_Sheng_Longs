@@ -45,34 +45,28 @@ namespace Reloj_Marcador.Pages.Login
 
         public async Task<IActionResult> OnPostAsync()
         {
-            
 
-            var (mensaje, nombreCompleto) = await _loginService.LoginAsync(Usuario, Contrasena);
+            var resultado = await _loginService.LoginAsync(Usuario, Contrasena);
 
-            if (mensaje == "Login Exitoso")
+            if (resultado.Mensaje == "Login Exitoso")
             {
-                // Crear claims (Información del usuario)
 
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, nombreCompleto ?? Usuario),
-                    new Claim("Usuario", Usuario)
+                    new Claim(ClaimTypes.Name, resultado.Nombre_Completo ?? Usuario),
+                    new Claim("Usuario", resultado.Identificacion)
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                // Autenticar con cookies
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-
-                
 
                 return RedirectToPage("/Index/Principal");
             }
             else
-            { 
-
-                Mensaje = mensaje;
+            {
+                Mensaje = resultado.Mensaje;
                 return Page();
             }
         }
