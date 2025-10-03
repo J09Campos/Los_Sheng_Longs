@@ -27,7 +27,17 @@ namespace Reloj_Marcador.Services
                 return ("Usuario y/o contraseña incorrectos.", null);
             }
 
-            
+            if (usuario.Length > 255)
+            {
+                return ("El usuario no puede tener más de 255 caracteres.", null);
+            }
+
+
+            if (contrasena.Length > 255)
+            {
+                return ("La contraseña no puede tener más de 255 caracteres.", null);
+            }
+
             var resultado = await _loginRepository.LoginAsync(usuario, contrasena);
 
             
