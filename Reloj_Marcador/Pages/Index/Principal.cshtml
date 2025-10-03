@@ -1,0 +1,71 @@
+﻿@page
+@model Reloj_Marcador.Pages.Index.PrincipalModel
+@{
+
+    Layout = "_Layout";
+    ViewData["Title"] = "Página Principal";
+
+}
+
+
+
+<div class="container-fluid">
+
+
+    <div class="jumbotron bg-gradient-primary text-white shadow text-center py-5 rounded">
+        <h1 class="display-4 font-weight-bold mb-3">
+            <i class="fas fa-hand-sparkles mr-2"></i> ¡Bienvenido(a), @User.Identity?.Name!
+        </h1>
+        <p class="lead">Este es tu panel principal, aquí podrás acceder a catálogos, funcionarios y reportes.</p>
+        <hr class="my-4 bg-light">
+        <p class="mb-0">Elige en el menú lateral la opción que necesites y comienza a trabajar.</p>
+    </div>
+
+
+    <div class="row text-center">
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-lg border-left-primary h-100">
+                <div class="card-body">
+                    <i class="fas fa-users fa-4x text-primary mb-3"></i>
+                    <h5 class="font-weight-bold text-gray-800">Gestión de Funcionarios</h5>
+                    <p class="text-muted">Consulta y administra la información del personal de manera centralizada.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-lg border-left-success h-100">
+                <div class="card-body">
+                    <i class="fas fa-folder-open fa-4x text-success mb-3"></i>
+                    <h5 class="font-weight-bold text-gray-800">Catálogos</h5>
+                    <p class="text-muted">Roles, áreas, motivos e inconsistencias organizadas en un solo lugar.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-lg border-left-info h-100">
+                <div class="card-body">
+                    <i class="fas fa-clock fa-4x text-info mb-3"></i>
+                    <h5 class="font-weight-bold text-gray-800">Registro de Marcas</h5>
+                    <p class="text-muted">Mantén un control preciso de entradas y salidas.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row mt-5">
+        <div class="col text-center">
+            <blockquote class="blockquote text-gray-700">
+                <p class="mb-2">
+                    <i class="fas fa-quote-left text-primary mr-2"></i>
+                    "La eficiencia es hacer las cosas bien; la eficacia es hacer las cosas correctas."
+                    <i class="fas fa-quote-right text-primary ml-2"></i>
+                </p>
+                <footer class="blockquote-footer">Cronos</footer>
+            </blockquote>
+        </div>
+    </div>
+
+</div>

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Reloj_Marcador.Entities;
 using Reloj_Marcador.Services.Abstract;
+using System.Data;
 
 namespace Reloj_Marcador.Pages.Funcionarios
 {
@@ -13,19 +14,26 @@ namespace Reloj_Marcador.Pages.Funcionarios
         {
             _funcionariosService = funcionariosService;
             Funcionario = new Funcionarios_Usuarios();
+
+            TiposIdentificacion = new List<TipoIdentificacion>();
+            Roles = new List<Rol>();
+            Estados = new List<Estado>();
         }
 
         [BindProperty]
         public Funcionarios_Usuarios Funcionario { get; set; }
 
+        public IEnumerable<TipoIdentificacion> TiposIdentificacion { get; set; }
+        public IEnumerable<Rol> Roles { get; set; }
+        public IEnumerable<Estado> Estados { get; set; }
+
         public async Task<IActionResult> OnGetAsync(string id)
         {
             Funcionario = await _funcionariosService.ObtenerPorIdAsync(id);
 
-            if (Funcionario == null)
-            {
-                return NotFound();
-            }
+            TiposIdentificacion = await _funcionariosService.ObtenerTiposIdentificacionAsync() ?? new List<TipoIdentificacion>();
+            Roles = await _funcionariosService.ObtenerRolesAsync() ?? new List<Rol>();
+            Estados = await _funcionariosService.ObtenerEstadosAsync() ?? new List<Estado>();
 
             return Page();
         }
@@ -34,6 +42,11 @@ namespace Reloj_Marcador.Pages.Funcionarios
         {
             if (!ModelState.IsValid)
             {
+                // Si hay error, recargamos combos
+                TiposIdentificacion = await _funcionariosService.ObtenerTiposIdentificacionAsync() ?? new List<TipoIdentificacion>();
+                Roles = await _funcionariosService.ObtenerRolesAsync() ?? new List<Rol>();
+                Estados = await _funcionariosService.ObtenerEstadosAsync() ?? new List<Estado>();
+
                 return Page();
             }
 

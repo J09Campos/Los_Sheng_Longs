@@ -18,8 +18,10 @@
             </div>
             <div class="form-group">
                 <label asp-for="Funcionario.TipoIdentificacion" class="control-label"></label>
-                <input asp-for="Funcionario.TipoIdentificacion" class="form-control" />
-                <span asp-validation-for="Funcionario.TipoIdentificacion" class="text-danger"></span>
+                <select asp-for="Funcionario.TipoIdentificacion" class="form-control"
+                        asp-items="@(new SelectList(Model.TiposIdentificacion, "ID_TipoIdentificacion", "Nombre_TipoIdentificacion"))">
+                    <option value="">Seleccione...</option>
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="Funcionario.Nombre" class="control-label"></label>
@@ -42,22 +44,24 @@
                 <span asp-validation-for="Funcionario.Contrasena" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Funcionario.ID_Rol" class="control-label"></label>
-                <input asp-for="Funcionario.ID_Rol" class="form-control" />
-                <span asp-validation-for="Funcionario.ID_Rol" class="text-danger"></span>
+                <label>Rol</label>
+                <select asp-for="Funcionario.ID_Rol" class="form-control"
+                        asp-items="@(new SelectList(Model.Roles, "ID_Rol", "Nombre_Rol"))">
+                    <option value="">Seleccione...</option>
+                </select>
             </div>
             <div class="form-group">
-                <label asp-for="Funcionario.Estado" class="control-label"></label>
-                <input asp-for="Funcionario.Estado" class="form-control" />
-                <span asp-validation-for="Funcionario.Estado" class="text-danger"></span>
+                <label>Estado</label>
+                <select asp-for="Funcionario.Estado" class="form-control"
+                        asp-items="@(new SelectList(Model.Estados, "Valor", "Valor"))">
+                    <option value="">Seleccione...</option>
+                </select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Guardar" class="btn btn-primary" />
+                <input type="submit" value="Salvar" class="btn btn-primary" />
+                <a asp-page="Index" class="btn btn-secondary">Volver</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-page="Index">Volver a la lista</a>
-</div>
