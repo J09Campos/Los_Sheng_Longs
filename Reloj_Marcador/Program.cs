@@ -20,6 +20,12 @@ builder.Services.AddScoped<IAreaService, AreaServices>();
 builder.Services.AddScoped<LoginRepository>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 
+builder.Services.AddScoped<MarcasRepository>();
+builder.Services.AddScoped<IMarcasService, MarcasService>();
+
+builder.Services.AddScoped<InconsistenciasRepository>();
+builder.Services.AddScoped<IInconsistenciasService, InconsisteciasService>();
+
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

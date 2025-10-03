@@ -1,0 +1,107 @@
+﻿@page
+@model Reloj_Marcador.Pages.Marca_Entrada_Salida.IndexModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Marcar Entrada-Salida";
+}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" rel="stylesheet" />
+
+<h1>Marcar Entrada-Salida</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <!-- Validaciones generales -->
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Marca.Identificacion" class="control-label">Usuario</label>
+                <input asp-for="Marca.Identificacion" id="IdentificacionInput" class="form-control" />
+                <span asp-validation-for="Marca.Identificacion" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Marca.Contrasena" class="control-label">Contraseña</label>
+                <input asp-for="Marca.Contrasena" class="form-control" type="password" />
+                <span asp-validation-for="Marca.Contrasena" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Área</label>
+                <select asp-for="Marca.Id_Area" asp-items="Model.AreasLista" id="AreasCombo" class="form-control">
+                </select>
+                <span asp-validation-for="Marca.Id_Area" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Marca.Descripcion" class="control-label">Descripción (opcional)</label>
+                <input asp-for="Marca.Descripcion" class="form-control" />
+                <span asp-validation-for="Marca.Descripcion" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Tipo de Marca</label>
+                <select asp-for="Marca.Tipo_Marca" id="TipoMarca" class="form-control">
+                    <option value="Entrada">Entrada</option>
+                    <option value="Salida">Salida</option>
+                </select>
+                <span asp-validation-for="Marca.Tipo_Marca" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Marcar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal para mensajes -->
+<div class="modal fade" id="systemMessageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content border-left-primary shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">@TempData.Peek("ModalTitle")</h5>
+                <button class="close text-white" type="button" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @TempData.Peek("ModalMessage")
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Mostrar modal si hay mensaje
+        $(document).ready(function () {
+            var modalMessage = "@(TempData["ModalMessage"] ?? "")";
+            if (modalMessage.length > 0) {
+                $("#systemMessageModal").modal("show");
+            }
+        });
+
+        // Script para cargar las áreas según la identificación
+        document.getElementById("IdentificacionInput").addEventListener("blur", function () {
+            var identificacion = this.value;
+
+            fetch(`?handler=ObtenerId&identificacion=${encodeURIComponent(identificacion)}`)
+                .then(response => response.json())
+                .then(data => {
+                    var combo = document.getElementById("AreasCombo");
+                    data.forEach(function (area) {
+                        var option = document.createElement("option");
+                        option.value = area.value;
+                        option.text = area.text;
+                        combo.appendChild(option);
+                    });
+                })
+                .catch(error => console.error(error));
+        });
+    </script>
+}
