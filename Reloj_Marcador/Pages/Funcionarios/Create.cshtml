@@ -12,45 +12,37 @@
 <div class="row">
     <div class="col-md-6">
         <form method="post">
-            <div asp-validation-summary="All" class="text-danger"></div>
-
             <div class="form-group">
                 <label>Tipo de Identificación</label>
                 <select asp-for="Funcionario.TipoIdentificacion" class="form-control"
                         asp-items="@(new SelectList(Model.TiposIdentificacion, "ID_TipoIdentificacion", "Nombre_TipoIdentificacion"))">
                     <option value="">Seleccione...</option>
                 </select>
-                <span asp-validation-for="Funcionario.TipoIdentificacion" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label>Identificación</label>
                 <input asp-for="Funcionario.Identificacion" class="form-control" />
-                <span asp-validation-for="Funcionario.Identificacion" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label>Nombre</label>
                 <input asp-for="Funcionario.Nombre" class="form-control" />
-                <span asp-validation-for="Funcionario.Nombre" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label>Apellido</label>
                 <input asp-for="Funcionario.Apellido" class="form-control" />
-                <span asp-validation-for="Funcionario.Apellido" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label>Correo</label>
                 <input asp-for="Funcionario.Correo" class="form-control" />
-                <span asp-validation-for="Funcionario.Correo" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label>Contraseña</label>
                 <input asp-for="Funcionario.Contrasena" type="password" class="form-control" />
-                <span asp-validation-for="Funcionario.Contrasena" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -59,7 +51,6 @@
                         asp-items="@(new SelectList(Model.Roles, "ID_Rol", "Nombre_Rol"))">
                     <option value="">Seleccione...</option>
                 </select>
-                <span asp-validation-for="Funcionario.ID_Rol" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -68,7 +59,6 @@
                         asp-items="@(new SelectList(Model.Estados, "Valor", "Valor"))">
                     <option value="">Seleccione...</option>
                 </select>
-                <span asp-validation-for="Funcionario.Estado" class="text-danger"></span>
             </div>
 
             <div class="form-group mt-3">
@@ -84,13 +74,13 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">@TempData.Peek("CreateTitle")</h5>
+                <h5 class="modal-title">@TempData.Peek("CreateTitle3")</h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                @TempData.Peek("CreateMessage")
+                @TempData.Peek("CreateMessage3")
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cerrar</button>
@@ -99,12 +89,22 @@
     </div>
 </div>
 
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger mt-2">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@error.ErrorMessage</div>
+        }
+    </div>
+}
+
 @section Scripts {
     <script>
         $(document).ready(function () {
-            var modalMessage = "@(TempData["CreateMessage"] ?? "")";
+            var modalMessage = "@(TempData["CreateMessage3"] ?? "")";
             if (modalMessage.length > 0) {
-                $("#systemMessageModal").modal("show");
+        $("#systemMessageModal").modal("show");
             }
         });
     </script>

@@ -23,21 +23,18 @@ namespace Reloj_Marcador.Entities
 
     public class TipoIdentificacion
     {
-        public string ID_TipoIdentificacion { get; set; }
-        public string Nombre_TipoIdentificacion { get; set; }
+        public string? ID_TipoIdentificacion { get; set; }
+        public string? Nombre_TipoIdentificacion { get; set; }
     }
 
     public class Rol
     {
-        public string ID_Rol { get; set; }
-        public string Nombre_Rol { get; set; }
+        public string? ID_Rol { get; set; } = string.Empty;
+        public string? Nombre_Rol { get; set; } = string.Empty;
     }
 
     public class Estado
     {
-        public string Valor { get; set; }
+        public string? Valor { get; set; }
     }
-
-
-
 }

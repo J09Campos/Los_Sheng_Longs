@@ -1,0 +1,34 @@
+﻿@page
+@model Reloj_Marcador.Pages.Roles.CreateModel
+@{
+    ViewData["Title"] = "Nuevo Rol";
+    Layout = "_Layout";
+}
+
+<h1>Nuevo Rol</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label>ID Rol</label>
+        <input asp-for="Rol.ID_Rol" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Nombre Rol</label>
+        <input asp-for="Rol.Nombre_Rol" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-page="Index" class="btn btn-secondary">Volver</a>
+</form>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger mt-2">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@error.ErrorMessage</div>
+        }
+    </div>
+}
+

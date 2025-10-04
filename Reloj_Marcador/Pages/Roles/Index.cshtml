@@ -1,44 +1,33 @@
 ﻿@page
-@model Reloj_Marcador.Pages.Funcionarios.IndexModel
+@model Reloj_Marcador.Pages.Roles.IndexModel
 @{
-    ViewData["Title"] = "Funcionarios";
+    ViewData["Title"] = "Administración de Roles";
     Layout = "_Layout";
 }
 
-<h1>Funcionarios</h1>
+<h1>Administración de Roles</h1>
 
 <p>
     <a class="btn btn-primary" asp-page="Create">Nuevo</a>
 </p>
 
-<!-- Tabla -->
 <div class="table-responsive">
     <table class="table table-bordered table-hover" style="width: 100%;">
         <thead style="background-color: #36404a; color: white;">
             <tr>
-                <th>Identificación</th>
-                <th>Tipo Identificación</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Correo</th>
-                <th>Rol</th>
-                <th>Estado</th>
+                <th>ID Rol</th>
+                <th>Nombre del Rol</th>
                 <th class="text-center" style="width: 15%;">Acciones</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.Funcionarios)
+            @foreach (var item in Model.Roles)
             {
                 <tr>
-                    <td>@item.Identificacion</td>
-                    <td>@item.TipoIdentificacion</td>
-                    <td>@item.Nombre</td>
-                    <td>@item.Apellido</td>
-                    <td>@item.Correo</td>
                     <td>@item.ID_Rol</td>
-                    <td>@item.Estado</td>
+                    <td>@item.Nombre_Rol</td>
                     <td class="text-center">
-                        <a asp-page="Edit" asp-route-id="@item.Identificacion"
+                        <a asp-page="Edit" asp-route-id="@item.ID_Rol"
                            class="btn btn-primary btn-circle btn-sm" title="Editar">
                             <i class="fas fa-edit"></i>
                         </a>
@@ -46,8 +35,8 @@
                                 class="btn btn-danger btn-circle btn-sm"
                                 data-toggle="modal"
                                 data-target="#deleteModal"
-                                data-id="@item.Identificacion"
-                                data-nombre="@item.Nombre"
+                                data-id="@item.ID_Rol"
+                                data-nombre="@item.Nombre_Rol"
                                 title="Eliminar">
                             <i class="fas fa-trash-alt"></i>
                         </button>
@@ -90,19 +79,17 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-
             <div class="modal-body text-gray-800">
-                ¿Realmente desea eliminar al funcionario <strong id="nombreFuncionario"></strong>?
+                ¿Realmente desea eliminar el rol <strong id="nombreRol"></strong>?
             </div>
-
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     <i class="fas fa-times mr-1"></i> No
                 </button>
                 <form method="post" asp-page-handler="Delete">
-                    <input type="hidden" name="Identificacion" id="idFuncionario" />
+                    <input type="hidden" name="IdRol" id="idRol" />
                     <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash-alt mr-1"></i> Si
+                        <i class="fas fa-trash-alt mr-1"></i> Sí
                     </button>
                 </form>
             </div>
@@ -115,13 +102,14 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">@TempData.Peek("CreateTitle1")</h5>
+                <h5 class="modal-title">Mensaje del sistema</h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                @TempData.Peek("CreateMessage1")
+                @TempData["Message"]
+                @TempData["Error"]
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cerrar</button>
@@ -139,17 +127,20 @@
             var nombre = button.data('nombre');
 
             var modal = $(this);
-            modal.find('#idFuncionario').val(id);
-            modal.find('#nombreFuncionario').text(nombre);
+            modal.find('#idRol').val(id);
+            modal.find('#nombreRol').text(nombre);
         });
 
         // Modal de mensajes del sistema
         $(document).ready(function () {
-            var modalMessage = "@(TempData["CreateMessage1"] ?? "")";
-            if (modalMessage.length > 0) {
+            var msg = "@(TempData["Message"] ?? "")";
+            var error = "@(TempData["Error"] ?? "")";
+
+            if (msg.length > 0 || error.length > 0) {
                 $("#systemMessageModal").modal("show");
             }
         });
     </script>
 }
+
 

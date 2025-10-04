@@ -1,0 +1,33 @@
+﻿@page "{id}"
+@model Reloj_Marcador.Pages.TiposIdentificacion.EditModel
+@{
+    ViewData["Title"] = "Editar Tipo de Identificación";
+    Layout = "_Layout";
+}
+
+<h1>Editar Tipo de Identificación</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label>ID Tipo</label>
+        <input asp-for="Tipo.ID_TipoIdentificacion" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label>Nombre del Tipo</label>
+        <input asp-for="Tipo.Nombre_TipoIdentificacion" class="form-control"/>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a asp-page="Index" class="btn btn-secondary">Volver</a>
+</form>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger mt-2">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@error.ErrorMessage</div>
+        }
+    </div>
+}

@@ -26,6 +26,12 @@ builder.Services.AddScoped<IMarcasService, MarcasService>();
 builder.Services.AddScoped<InconsistenciasRepository>();
 builder.Services.AddScoped<IInconsistenciasService, InconsisteciasService>();
 
+builder.Services.AddScoped<RolesRepository>();
+builder.Services.AddScoped<IRolesService, RolesService>();
+
+builder.Services.AddScoped<TiposIdentificacionRepository>();
+builder.Services.AddScoped<ITiposIdentificacionService, TiposIdentificacionService>();
+
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

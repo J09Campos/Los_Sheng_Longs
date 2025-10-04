@@ -42,7 +42,7 @@ namespace Reloj_Marcador.Pages.Funcionarios
         {
             if (!ModelState.IsValid)
             {
-                // Si hay error, recargamos combos
+                // Si hay error de validación, recargamos combos
                 TiposIdentificacion = await _funcionariosService.ObtenerTiposIdentificacionAsync() ?? new List<TipoIdentificacion>();
                 Roles = await _funcionariosService.ObtenerRolesAsync() ?? new List<Rol>();
                 Estados = await _funcionariosService.ObtenerEstadosAsync() ?? new List<Estado>();
@@ -50,10 +50,27 @@ namespace Reloj_Marcador.Pages.Funcionarios
                 return Page();
             }
 
-            // Guardar nuevo funcionario
-            await _funcionariosService.CrearAsync(Funcionario);
+            try
+            {
+                // Intentar guardar
+                await _funcionariosService.CrearAsync(Funcionario);
+                TempData["CreateMessage1"] = "Funcionario creado con éxito.";
+                return RedirectToPage("Index");
+            }
+            catch (Exception ex)
+            {
+                // Mostrar error en la interfaz
+                //ModelState.AddModelError(string.Empty, ex.Message);
+                TempData["CreateTitle3"] = "Operación Fallida";
+                TempData["CreateMessage3"] = ex.Message;
 
-            return RedirectToPage("Index");
+                // Recargar combos antes de volver a la vista
+                TiposIdentificacion = await _funcionariosService.ObtenerTiposIdentificacionAsync() ?? new List<TipoIdentificacion>();
+                Roles = await _funcionariosService.ObtenerRolesAsync() ?? new List<Rol>();
+                Estados = await _funcionariosService.ObtenerEstadosAsync() ?? new List<Estado>();
+
+                return Page();
+            }
         }
     }
 }

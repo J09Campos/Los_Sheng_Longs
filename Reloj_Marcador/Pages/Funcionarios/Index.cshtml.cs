@@ -43,8 +43,8 @@ namespace Reloj_Marcador.Pages.Funcionarios
         {
             if (string.IsNullOrEmpty(Identificacion))
             {
-                TempData["CreateMessage"] = "No se recibió una identificación válida.";
-                TempData["CreateTitle"] = "Error";
+                TempData["CreateMessage1"] = "No se recibió una identificación válida.";
+                TempData["CreateTitle1"] = "Error";
                 return RedirectToPage();
             }
 
@@ -52,13 +52,13 @@ namespace Reloj_Marcador.Pages.Funcionarios
 
             if (rowsAffected == 0)
             {
-                TempData["CreateMessage"] = "No se pudo eliminar el funcionario.";
-                TempData["CreateTitle"] = "Error";
+                TempData["CreateMessage1"] = "No se pudo eliminar el funcionario.";
+                TempData["CreateTitle1"] = "Error";
             }
             else
             {
-                TempData["CreateMessage"] = "Funcionario eliminado correctamente.";
-                TempData["CreateTitle"] = "Éxito";
+                TempData["CreateMessage1"] = "Funcionario eliminado correctamente.";
+                TempData["CreateTitle1"] = "Éxito";
             }
 
             return RedirectToPage();
