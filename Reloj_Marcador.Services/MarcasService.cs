@@ -62,11 +62,18 @@ namespace Reloj_Marcador.Services
                 return false;
             }
 
+            // Validar tipo de Area
+            if (string.IsNullOrWhiteSpace(marca.Id_Area))
+            {
+                marca.Mensaje = "El área es obligatoria.";
+                return false;
+            }
             // Validar descripción
             if (string.IsNullOrWhiteSpace(marca.Descripcion))
             {
                 marca.Descripcion = "";
-            } else 
+            }
+            else
             {
                 if (marca.Descripcion.Length > 100)
                 {

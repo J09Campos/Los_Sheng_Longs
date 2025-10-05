@@ -18,6 +18,11 @@ namespace Reloj_Marcador.Services.Abstract
         Task<IEnumerable<TipoIdentificacion>> ObtenerTiposIdentificacionAsync();
         Task<IEnumerable<Rol>> ObtenerRolesAsync();
         Task<IEnumerable<Estado>> ObtenerEstadosAsync();
-
+        Task<string> Crear_ContrasenaAsync();
+        Task<(bool Resultado, string Mensaje)> Cambiar_ContrasenaAsync(string identificacion, string contrasena);
+        Task<IEnumerable<Funcionarios_Areas>> ListarFuncionariosAreasAsync(string identificacion);
+        Task<IEnumerable<Funcionarios_Areas>> ListarAreasAsync();
+        Task<(bool resultado, string mensaje)> InsertarFuncionarioAreaAsync(Funcionarios_Areas funcionarioArea);
+        Task<(bool Resultado, string Mensaje)> EliminarAsociacionAsync(Funcionarios_Areas funcionarioArea);
     }
 }

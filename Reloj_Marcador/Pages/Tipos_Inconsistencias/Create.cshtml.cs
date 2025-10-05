@@ -25,10 +25,6 @@ namespace Reloj_Marcador.Pages.Tipos_Inconsistencias
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
 
             await _inconsistenciasService.CRUDAsync(Inconsistencia, "Crear");
 
@@ -40,8 +36,15 @@ namespace Reloj_Marcador.Pages.Tipos_Inconsistencias
                 return Page();
 
             }
+            else
+            {
+                TempData["ModalTitle"] = "Operación Exitosa";
+                TempData["ModalMessage"] = Inconsistencia.Mensaje;
 
-            return RedirectToPage("Index");
+                return RedirectToPage("Index");
+
+            }
+
         }
 
     }

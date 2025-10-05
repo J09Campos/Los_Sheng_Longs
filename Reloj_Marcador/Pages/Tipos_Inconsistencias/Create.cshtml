@@ -26,7 +26,6 @@
     </div>
 </div>
 
-<!-- Modal Mensajes del sistema -->
 <div class="modal fade" id="systemMessageModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -48,7 +47,6 @@
 @section Scripts {
     <script>
 
-        // Modal mensaje del sistema
         $(document).ready(function () {
             var modalMessage = "@(TempData["ModalMessage"] ?? "")";
             if (modalMessage.length > 0) {

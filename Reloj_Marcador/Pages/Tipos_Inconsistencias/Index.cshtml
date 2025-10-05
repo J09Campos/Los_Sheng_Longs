@@ -6,13 +6,12 @@
 }
 <link href="~/css/areas.css" rel="stylesheet" />
 
-<h1>Tipos de Inconsistencias</h1>
+<h1>Administración de Tipos de Inconsistencias</h1>
 
 <p>
     <a class="btn btn-primary" asp-page="Create">Nuevo</a>
 </p>
 
-<!-- Tabla -->
 <div class="table-responsive">
     <table class="table table-bordered table-hover" style="width: 100%;">
         <thead style="background-color: #36404a; color: white;">
@@ -31,7 +30,7 @@
                     <td class="text-center">
                         <a asp-page="Edit" asp-route-id="@item.Id_Inconsistencia"
                            class="btn btn-primary btn-circle btn-sm"
-                           title="Editar">
+                           title="Actualizar">
                             <i class="fas fa-edit"></i>
                         </a>
                         <button type="button"
@@ -67,7 +66,7 @@
             </li>
         </ul>
     </nav>
-<!-- Modal Eliminar -->
+
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content border-left-primary shadow">
@@ -100,7 +99,6 @@
     </div>
 </div>
 
-<!-- Modal Mensajes del sistema -->
 <div class="modal fade" id="systemMessageModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -122,7 +120,6 @@
 
 @section Scripts {
     <script>
-        // Modal eliminar
         $('#deleteModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
@@ -134,8 +131,6 @@
         });
     </script>
     <script>
-
-        // Modal mensaje del sistema
         $(document).ready(function () {
             var modalMessage = "@(TempData["ModalMessage"] ?? "")";
             if (modalMessage.length > 0) {

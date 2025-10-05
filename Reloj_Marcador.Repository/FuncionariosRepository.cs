@@ -23,7 +23,6 @@ namespace Reloj_Marcador.Repository
             _dbConnectionFactory = dbConnectionFactory;
         }
 
-        // 🔹 LISTAR (desencripta la contraseña antes de devolverla)
         public async Task<IEnumerable<Funcionarios_Usuarios>> ListarAsync()
         {
             using (var connection = _dbConnectionFactory.CreateConnection())
@@ -55,7 +54,7 @@ namespace Reloj_Marcador.Repository
                         }
                         catch
                         {
-                            f.Contrasena = "********"; // fallback
+                            f.Contrasena = "********"; 
                         }
                     }
                 }
@@ -64,7 +63,6 @@ namespace Reloj_Marcador.Repository
             }
         }
 
-        // 🔹 OBTENER POR ID (desencripta contraseña)
         public async Task<Funcionarios_Usuarios?> ObtenerPorIdAsync(string identificacion)
         {
             using (var connection = _dbConnectionFactory.CreateConnection())
@@ -101,8 +99,6 @@ namespace Reloj_Marcador.Repository
                 return funcionario;
             }
         }
-
-        // 🔹 CREAR (encripta antes de guardar)
         public async Task<int> CrearAsync(Funcionarios_Usuarios funcionario)
         {
             using (var connection = _dbConnectionFactory.CreateConnection())
@@ -131,7 +127,6 @@ namespace Reloj_Marcador.Repository
             }
         }
 
-        // 🔹 ACTUALIZAR (solo encripta si la contraseña no es "********")
         public async Task<int> ActualizarAsync(Funcionarios_Usuarios funcionario)
         {
             using (var connection = _dbConnectionFactory.CreateConnection())
@@ -142,7 +137,7 @@ namespace Reloj_Marcador.Repository
                 }
                 else
                 {
-                    funcionario.Contrasena = null; // no actualizar
+                    funcionario.Contrasena = null;
                 }
 
                 return await connection.ExecuteAsync(
@@ -164,7 +159,6 @@ namespace Reloj_Marcador.Repository
             }
         }
 
-        // 🔹 ELIMINAR
         public async Task<int> EliminarAsync(string identificacion)
         {
             using (var connection = _dbConnectionFactory.CreateConnection())
@@ -257,10 +251,6 @@ namespace Reloj_Marcador.Repository
             }
         }
 
-
-        // =====================================================
-        // 🔐 Métodos de Encriptación / Desencriptación (AES)
-        // =====================================================
         public static string Encrypt(string plainText)
         {
             if (string.IsNullOrEmpty(plainText))
@@ -319,6 +309,116 @@ namespace Reloj_Marcador.Repository
                 }
             }
         }
+
+        public async Task<string> Crear_ContrasenaAsync()
+        {
+            using (var connection = _dbConnectionFactory.CreateConnection())
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("NuevaContra", dbType: DbType.String, size: 100, direction: ParameterDirection.Output);
+
+                await connection.ExecuteAsync(
+                    "SP_Crear_Contra_Funcionario",
+                    parameters,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                return parameters.Get<string>("NuevaContra");
+            }
+        }
+
+        public async Task<int> Cambiar_ContrasenaAsync(string identificacion, string contrasena)
+        {
+            using (var connection = _dbConnectionFactory.CreateConnection())
+            {
+                string contrasenaCifrada = LoginRepository.Encrypt(contrasena);
+
+                return await connection.ExecuteAsync(
+                    "SP_Cambiar_Contra_Funcionario",
+                    new
+                    {
+                        p_ID_Funcionario = identificacion,
+                        p_Nueva_Contra = contrasenaCifrada
+                    },
+                    commandType: CommandType.StoredProcedure
+                );
+            }
+
+        }
+
+        public async Task<IEnumerable<Funcionarios_Areas>> ListarFuncionariosAreasAsync(string identificacion)
+        {
+            using (var connection = _dbConnectionFactory.CreateConnection())
+            {
+                return await connection.QueryAsync<Funcionarios_Areas>(
+                    "SP_Listar_Func_Areas",
+                    new { p_ID_Funcionario = identificacion },
+                    commandType: CommandType.StoredProcedure
+                );
+            }
+        }
+
+        public async Task<IEnumerable<Funcionarios_Areas>> ListarAreasAsync()
+        {
+            using (var connection = _dbConnectionFactory.CreateConnection())
+            {
+                return await connection.QueryAsync<Funcionarios_Areas>(
+                    "SP_Listar_Areas_Funcionarios",
+                    commandType: CommandType.StoredProcedure
+                );
+            }
+        }
+
+        public async Task<(bool resultado, string mensaje)> InsertarFuncionarioAreaAsync(Funcionarios_Areas funcionarioArea)
+        {
+            try
+            {
+                using (var connection = _dbConnectionFactory.CreateConnection())
+                {
+                    var parametros = new
+                    {
+                        p_Identificacion = funcionarioArea.Identificacion,
+                        p_ID_Area = funcionarioArea.ID_Area
+                    };
+
+                    await connection.ExecuteAsync("SP_Insertar_Funcionario_Area", parametros, commandType: CommandType.StoredProcedure);
+                }
+
+                return (true, "Funcionario asociado correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"{ex.Message}");
+            }
+        }
+
+        public async Task<(bool Resultado, string Mensaje)> EliminarAsociacionAsync(Funcionarios_Areas funcionarioArea)
+        {
+            try
+            {
+                using (var connection = _dbConnectionFactory.CreateConnection())
+                {
+                    var parametros = new
+                    {
+                        p_id_Asocio_Area = funcionarioArea.ID_Funcionario_Area
+                    };
+
+                    await connection.ExecuteAsync(
+                        "SP_Eliminar_Funcionario_Area",
+                        parametros,
+                        commandType: CommandType.StoredProcedure
+                    );
+                }
+
+                return (true, "La asociación se eliminó correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error al eliminar la asociación: {ex.Message}");
+            }
+        }
+
+
     }
 }
 

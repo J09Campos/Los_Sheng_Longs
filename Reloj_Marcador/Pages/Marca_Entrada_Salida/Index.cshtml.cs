@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -5,6 +6,7 @@ using Reloj_Marcador.Entities;
 
 namespace Reloj_Marcador.Pages.Marca_Entrada_Salida
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly Services.Abstract.IMarcasService _marcasService;
@@ -16,22 +18,17 @@ namespace Reloj_Marcador.Pages.Marca_Entrada_Salida
             AreasLista = new SelectList(Enumerable.Empty<Area>(), "Id_Area", "Nombre_Area");
         }
 
-        // Propiedad bind para el formulario
         [BindProperty]
         public Marcas Marca { get; set; }
 
-        // Propiedad para el combo de áreas
         public SelectList AreasLista { get; set; }
 
-
-        // Handler que devuelve las áreas según la identificación
         public async Task<JsonResult> OnGetObtenerIdAsync(string identificacion)
         {
             List<SelectListItem> selectList;
 
             if (string.IsNullOrEmpty(identificacion))
             {
-                // Retorna solo la opción "--Seleccione--"
                 selectList = new List<SelectListItem>
                 {
                     new SelectListItem { Value = "", Text = "--Seleccione--" }
@@ -47,8 +44,7 @@ namespace Reloj_Marcador.Pages.Marca_Entrada_Salida
                     Text = a.Item2
                 }).ToList();
 
-                // Siempre agregar la opción "--Seleccione--" al inicio
-                selectList.Insert(0, new SelectListItem { Value = "", Text = "--Seleccione--" });
+                selectList.Insert(0, new SelectListItem { Value = "", Text = "Seleccione..." });
             }
 
             return new JsonResult(selectList);
@@ -60,7 +56,6 @@ namespace Reloj_Marcador.Pages.Marca_Entrada_Salida
                 return Page();
             }
 
-            // Aquí recibimos la tupla que devuelve ValidateUser
             var (resultado, mensaje) = await _marcasService.ValidateUser(Marca);
 
             if (!resultado)
@@ -70,10 +65,8 @@ namespace Reloj_Marcador.Pages.Marca_Entrada_Salida
                 return Page();
             }
 
-            // Obtener la hora del servidor
             var horaServidor = DateTime.Now.ToString("HH:mm:ss"); 
 
-            // Si resultado == true
             TempData["ModalTitle"] = "Operación Exitosa";
             TempData["ModalMessage"] = $"Hora Servidor: {horaServidor}";
 

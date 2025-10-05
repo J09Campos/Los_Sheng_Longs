@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -6,6 +7,7 @@ using Reloj_Marcador.Services.Abstract;
 
 namespace Reloj_Marcador.Pages.Areas
 {
+    [Authorize]
     public class EditModel : PageModel
     {
         private readonly IAreaService _areaService;
@@ -39,8 +41,8 @@ namespace Reloj_Marcador.Pages.Areas
                     return NotFound();
                 }
             }
-//Se encarga de llenar el Combo de Jefes                                                                       --Esto se encarga de poner el jefe actual del área
-            ListaJefes = jefes.Select(j => new SelectListItem{Value = j.ID_Jefe,Text = j.Nombre_Jefe,Selected = (Area != null && Area.Jefe == j.ID_Jefe)}).ToList();
+            //Se encarga de llenar el Combo de Jefes                                                                       --Esto se encarga de poner el jefe actual del área
+            ListaJefes = jefes.Select(j => new SelectListItem { Value = j.ID_Jefe, Text = j.Nombre_Jefe, Selected = (Area != null && Area.Jefe == j.ID_Jefe) }).ToList();
             return Page();
         }
 
@@ -59,7 +61,7 @@ namespace Reloj_Marcador.Pages.Areas
             if (!ModelState.IsValid)
             {
                 TempData["EditMessage"] = "Existen errores en el formulario.";
-                TempData["EditTitle"] = "Validación Fallida";
+                TempData["EditTitle"] = "Operación Fallida";
                 await CargarListaJefes();
                 return Page();
             }

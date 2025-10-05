@@ -44,7 +44,102 @@ public class FuncionariosServices : IFuncionariosService
     public async Task<IEnumerable<Estado>> ObtenerEstadosAsync()
         => await _funcionarioRepository.ObtenerEstadosAsync();
 
-    // Validaciones antes de CRUD
+    public async Task<string> Crear_ContrasenaAsync()
+    {
+        return await _funcionarioRepository.Crear_ContrasenaAsync();
+    }
+
+    public async Task<(bool Resultado, string Mensaje)> Cambiar_ContrasenaAsync(string identificacion, string contrasena)
+    {
+        if (string.IsNullOrWhiteSpace(identificacion))
+            return (false, "La identificación no debe ser nula o vacía.");
+
+        if (string.IsNullOrWhiteSpace(contrasena))
+            return (false, "La contraseña no debe ser nula o vacía.");
+
+        if (contrasena.Length > 50)
+            return (false, "La contraseña no debe superar los 50 caracteres.");
+
+
+        try
+        {
+            var resultado = await _funcionarioRepository.Cambiar_ContrasenaAsync(identificacion, contrasena);
+
+            if (resultado > 0)
+            {
+                return (true, "La contraseña se cambió correctamente.");
+            }
+            else
+            {
+                return (false, "No se pudo cambiar la contraseña. Verifique los datos.");
+            }
+        }
+        catch (MySql.Data.MySqlClient.MySqlException ex)
+        {
+
+            return (false, ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return (false, ex.Message);
+        }
+    }
+
+    public async Task<IEnumerable<Funcionarios_Areas>> ListarFuncionariosAreasAsync(string identificacion)
+    {
+        return await _funcionarioRepository.ListarFuncionariosAreasAsync(identificacion);
+    }
+
+    public async Task<IEnumerable<Funcionarios_Areas>> ListarAreasAsync()
+    {
+        return await _funcionarioRepository.ListarAreasAsync();
+    }
+
+    public async Task<(bool resultado, string mensaje)> InsertarFuncionarioAreaAsync(Funcionarios_Areas funcionarioArea)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(funcionarioArea.Identificacion))
+                return (false, "La identificación del funcionario es obligatoria.");
+
+            if (string.IsNullOrWhiteSpace(funcionarioArea.Identificacion))
+                return (false, "La identificación del funcionario es obligatoria.");
+
+            if (funcionarioArea.Identificacion.Length > 22)
+                return (false, "La identificación del funcionario no debe ser mayor a 22 caracteres.");
+
+            var resultado = await _funcionarioRepository.InsertarFuncionarioAreaAsync(funcionarioArea);
+
+            return resultado;
+        }
+        catch (MySql.Data.MySqlClient.MySqlException ex)
+        {
+
+            return (false, ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return (false, $"Error inesperado al insertar la relación: {ex.Message}");
+        }
+
+    }
+
+    public async Task<(bool Resultado, string Mensaje)> EliminarAsociacionAsync(Funcionarios_Areas funcionarioArea)
+    {
+        if (funcionarioArea.ID_Funcionario_Area == null)
+            return (false, "El ID de la asociación no es válido.");
+
+        try
+        {
+            var resultado = await _funcionarioRepository.EliminarAsociacionAsync(funcionarioArea);
+            return resultado;
+        }
+        catch (Exception ex)
+        {
+            return (false, $"Error inesperado: {ex.Message}");
+        }
+    }
+
     private void ValidarFuncionario(Funcionarios_Usuarios f)
     {
         if (string.IsNullOrWhiteSpace(f.Identificacion))

@@ -5,7 +5,7 @@
     Layout = "_Layout";
 }
 
-<h1>Editar Rol</h1>
+<h1>Actualizar Rol</h1>
 
 <form method="post">
     <div class="form-group">
@@ -22,13 +22,33 @@
     <a asp-page="Index" class="btn btn-secondary">Volver</a>
 </form>
 
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger mt-2">
-        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-        {
-            <div>@error.ErrorMessage</div>
-        }
+<div class="modal fade" id="systemMessageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">@TempData.Peek("CreateTitle6")</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @TempData.Peek("CreateMessage6")
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
     </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var modalMessage = "@(TempData["CreateMessage6"] ?? "")";
+            if (modalMessage.length > 0) {
+        $("#systemMessageModal").modal("show");
+            }
+        });
+    </script>
 }
 

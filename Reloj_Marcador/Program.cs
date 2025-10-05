@@ -17,23 +17,30 @@ builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
 builder.Services.AddScoped<AreaRepository>();
 builder.Services.AddScoped<IAreaService, AreaServices>();
 
+//Login
 builder.Services.AddScoped<LoginRepository>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 
+//Marcas
 builder.Services.AddScoped<MarcasRepository>();
 builder.Services.AddScoped<IMarcasService, MarcasService>();
 
+//Inconsistencias
 builder.Services.AddScoped<InconsistenciasRepository>();
 builder.Services.AddScoped<IInconsistenciasService, InconsisteciasService>();
 
+//Roles
 builder.Services.AddScoped<RolesRepository>();
 builder.Services.AddScoped<IRolesService, RolesService>();
 
+//Tipos Identificacion
 builder.Services.AddScoped<TiposIdentificacionRepository>();
 builder.Services.AddScoped<ITiposIdentificacionService, TiposIdentificacionService>();
 
+
 builder.Services.AddDistributedMemoryCache();
 
+// Configurar la sesión
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -58,8 +65,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                 }
                 else
                 {
-                    // Nunca estuvo logueado
-
                     ctx.Response.Redirect("/Login/Login?unauthenticated=true");
                 }
 

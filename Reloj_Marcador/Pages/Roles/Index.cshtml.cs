@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Reloj_Marcador.Entities;
@@ -5,6 +6,7 @@ using Reloj_Marcador.Services.Abstract;
 
 namespace Reloj_Marcador.Pages.Roles
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly IRolesService _rolesService;
@@ -48,7 +50,7 @@ namespace Reloj_Marcador.Pages.Roles
             }
             catch (Exception ex)
             {
-                TempData["Error"] = ex.Message;
+                TempData["CreateMessage10"] = ex.Message;
                 return RedirectToPage();
             }
         }

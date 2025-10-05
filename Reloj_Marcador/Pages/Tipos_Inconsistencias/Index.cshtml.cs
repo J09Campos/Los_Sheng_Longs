@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Reloj_Marcador.Entities;
@@ -5,6 +6,7 @@ using Reloj_Marcador.Services.Abstract;
 
 namespace Reloj_Marcador.Pages.Tipos_Inconsistencias
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         public readonly IInconsistenciasService _inconsistenciasService;
@@ -27,7 +29,6 @@ namespace Reloj_Marcador.Pages.Tipos_Inconsistencias
         {
             var allInconsistencias = await _inconsistenciasService.GetAllAsync();
 
-            // Calculamos la paginación
             int totalRecords = allInconsistencias.Count();
             TotalPages = (int)Math.Ceiling(totalRecords / (double)PageSize);
             CurrentPage = pageNumber;

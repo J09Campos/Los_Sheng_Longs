@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -6,6 +7,7 @@ using Reloj_Marcador.Services.Abstract;
 
 namespace Reloj_Marcador.Pages.Areas
 {
+    [Authorize]
     public class CreateModel : PageModel
     {
         private readonly IAreaService _areaService;
@@ -50,7 +52,7 @@ namespace Reloj_Marcador.Pages.Areas
             if (!ModelState.IsValid)
             {
 
-                TempData["CreateTitle"] = "Validación Fallida";
+                TempData["CreateTitle"] = "Operación Fallida";
                 TempData["CreateMessage"] = "Existen errores en el formulario. Por favor, revise los campos.";
                 await CargarListaJefes();
                 return Page();

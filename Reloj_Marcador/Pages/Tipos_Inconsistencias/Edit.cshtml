@@ -4,7 +4,7 @@
     ViewData["Title"] = "Editar Tipo Inconsistencias";
 }
 
-<h1>Editar Tipo Inconsistencias</h1>
+<h1>Actualizar Tipo Inconsistencias</h1>
 
 <h4>Persona</h4>
 <hr />
@@ -12,14 +12,12 @@
     <div class="col-md-4">
         <form method="post">
             <div class="form-group">
-                <label asp-for="Inconsistencia.Id_Inconsistencia" class="control-label"></label>
+                <label asp-for="Inconsistencia.Id_Inconsistencia" class="control-label">ID Inconsistencia</label>
                 <input asp-for="Inconsistencia.Id_Inconsistencia" class="form-control" readonly />
-                <span asp-validation-for="Inconsistencia.Id_Inconsistencia" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Inconsistencia.Nombre_Inconsistencia" class="control-label"></label>
+                <label asp-for="Inconsistencia.Nombre_Inconsistencia" class="control-label"> Nombre Inconsistencia</label>
                 <input asp-for="Inconsistencia.Nombre_Inconsistencia" class="form-control" />
-                <span asp-validation-for="Inconsistencia.Nombre_Inconsistencia" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Salvar" class="btn btn-primary" />
@@ -29,7 +27,6 @@
     </div>
 </div>
 
-<!-- Modal Mensajes del sistema -->
 <div class="modal fade" id="systemMessageModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -50,8 +47,6 @@
 </div>
 @section Scripts {
     <script>
-
-        // Modal mensaje del sistema
         $(document).ready(function () {
             var modalMessage = "@(TempData["ModalMessage"] ?? "")";
             if (modalMessage.length > 0) {

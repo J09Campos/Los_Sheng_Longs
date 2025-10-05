@@ -69,7 +69,7 @@ namespace Reloj_Marcador.Repository
                 }
                 catch (Exception ex)
                 {
-                    return (false, ex.Message); 
+                    return (false, ex.Message);
                 }
             }
         }

@@ -5,7 +5,7 @@
     Layout = "_Layout";
 }
 
-<h1>Nuevo Tipo de Identificación</h1>
+<h1>Crear Tipo de Identificación</h1>
 
 <form method="post">
     <div class="form-group">
@@ -22,6 +22,25 @@
     <a asp-page="Index" class="btn btn-secondary">Volver</a>
 </form>
 
+<div class="modal fade" id="systemMessageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">@TempData.Peek("CreateTitle9")</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @TempData.Peek("CreateMessage9")
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @if (!ViewData.ModelState.IsValid)
 {
     <div class="alert alert-danger mt-2">
@@ -30,5 +49,16 @@
             <div>@error.ErrorMessage</div>
         }
     </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var modalMessage = "@(TempData["CreateMessage9"] ?? "")";
+            if (modalMessage.length > 0) {
+        $("#systemMessageModal").modal("show");
+            }
+        });
+    </script>
 }
 

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Editar Funcionario";
 }
 
-<h1>Editar Funcionario</h1>
+<h1>Actualizar Funcionario</h1>
 
 <h4>Funcionario</h4>
 <hr />
@@ -58,6 +58,25 @@
             </div>
         </form>
 
+        <div class="modal fade" id="systemMessageModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">@TempData.Peek("CreateTitle4")</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @TempData.Peek("CreateMessage4")
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @if (!ViewData.ModelState.IsValid)
         {
             <div class="alert alert-danger mt-2">
@@ -67,7 +86,16 @@
                 }
             </div>
         }
-
+        @section Scripts {
+            <script>
+                $(document).ready(function () {
+                    var modalMessage = "@(TempData["CreateMessage4"] ?? "")";
+                    if (modalMessage.length > 0) {
+                $("#systemMessageModal").modal("show");
+                    }
+                });
+            </script>
+        }
     </div>
 </div>
 

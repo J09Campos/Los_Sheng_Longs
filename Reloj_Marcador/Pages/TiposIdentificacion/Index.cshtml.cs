@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Reloj_Marcador.Entities;
+using Reloj_Marcador.Services;
 using Reloj_Marcador.Services.Abstract;
 
 namespace Reloj_Marcador.Pages.TiposIdentificacion
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly ITiposIdentificacionService _service;
@@ -18,6 +21,7 @@ namespace Reloj_Marcador.Pages.TiposIdentificacion
         public IEnumerable<TipoIdentificacion> Tipos { get; set; }
 
         [BindProperty]
+        public string IdTipo { get; set; } = string.Empty;
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
         private const int PageSize = 10;
@@ -37,18 +41,41 @@ namespace Reloj_Marcador.Pages.TiposIdentificacion
                 .ToList();
         }
 
-        public async Task<IActionResult> OnPostDeleteAsync(string IdTipo)
+        public async Task<IActionResult> OnPostDeleteAsync()
         {
+            if (string.IsNullOrEmpty(IdTipo))
+            {
+                TempData["CreateMessage0"] = "No se recibió un tipo de identificación válido.";
+                TempData["CreateTitle0"] = "Operación Fallida";
+                return RedirectToPage();
+            }
+
             try
             {
-                await _service.EliminarAsync(IdTipo);
-                return RedirectToPage();
+                var rowsAffected = await _service.EliminarAsync(IdTipo);
+
+                if (rowsAffected == 0)
+                {
+                    TempData["CreateMessage0"] = "No se pudo eliminar el tipo de identificación.";
+                    TempData["CreateTitle0"] = "Operación Fallida";
+                }
             }
-            catch (Exception ex)
+            catch (MySql.Data.MySqlClient.MySqlException ex)
             {
-                TempData["Error"] = ex.Message;
-                return RedirectToPage();
+                if (ex.Message.Contains("porque está siendo usado por funcionarios") ||
+                    ex.Message.Contains("foreign key constraint fails"))
+                {
+                    TempData["CreateMessage0"] = "No se puede eliminar este tipo de identificación porque está asociado a uno o más funcionarios.";
+                    TempData["CreateTitle0"] = "Operación Fallida";
+                }
+                else
+                {
+                    TempData["CreateMessage0"] = "Ocurrió un error inesperado al intentar eliminar.";
+                    TempData["CreateTitle0"] = "Operación Fallida";
+                }
             }
+
+            return RedirectToPage();
         }
     }
 }

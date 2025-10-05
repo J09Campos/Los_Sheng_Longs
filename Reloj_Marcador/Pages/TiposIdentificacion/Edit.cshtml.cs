@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Reloj_Marcador.Entities;
@@ -6,6 +7,7 @@ using Reloj_Marcador.Services.Abstract;
 
 namespace Reloj_Marcador.Pages.TiposIdentificacion
 {
+    [Authorize]
     public class EditModel : PageModel
     {
         private readonly ITiposIdentificacionService _service;
@@ -40,6 +42,8 @@ namespace Reloj_Marcador.Pages.TiposIdentificacion
             }
             catch (Exception ex)
             {
+                TempData["CreateTitle8"] = "Operación Fallida";
+                TempData["CreateMessage8"] = ex.Message;
                 ModelState.AddModelError("", ex.Message);
                 return Page();
             }

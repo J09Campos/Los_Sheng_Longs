@@ -1,10 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Reloj_Marcador.Services.Abstract;
 using Reloj_Marcador.Entities;
+using Reloj_Marcador.Services.Abstract;
 
 namespace Reloj_Marcador.Areas
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly IAreaService _areaService;
@@ -22,20 +24,18 @@ namespace Reloj_Marcador.Areas
 
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
-        private const int PageSize = 10; 
+        private const int PageSize = 10;
 
         public async Task OnGetAsync(int pageNumber = 1)
         {
-            // Traemos todas las áreas (si tu servicio soporta paginación, aquí sería mejor)
             var allAreas = await _areaService.GetAllAsync();
 
-            // Calculamos la paginación
             int totalRecords = allAreas.Count();
             TotalPages = (int)Math.Ceiling(totalRecords / (double)PageSize);
             CurrentPage = pageNumber;
 
             Areas = allAreas
-                .OrderBy(a => a.ID_Area) 
+                .OrderBy(a => a.ID_Area)
                 .Skip((pageNumber - 1) * PageSize)
                 .Take(PageSize)
                 .ToList();
@@ -43,36 +43,21 @@ namespace Reloj_Marcador.Areas
 
         public async Task<IActionResult> OnPostDeleteAsync()
         {
-            if (string.IsNullOrEmpty(IdArea))
+
+            var area = await _areaService.GetByIdAsync(IdArea);
+            if (area == null)
             {
-                ModelState.AddModelError(string.Empty, "Id no válido.");
-                return Page();
+                TempData["CreateTitle"] = "Operación Fallida";
+                TempData["CreateMessage"] = "Área no encontrada.";
+                return RedirectToPage(new { pageNumber = CurrentPage });
             }
 
-            try
-            {
-                var area = await _areaService.GetByIdAsync(IdArea);
-                if (area == null)
-                {
-                    ModelState.AddModelError(string.Empty, "Área no encontrada.");
-                    return Page();
-                }
+            var (resultado, mensaje) = await _areaService.DeleteAsync(area);
 
-                var (resultado, mensaje) = await _areaService.DeleteAsync(area);
+            TempData["CreateTitle"] = "Operación Exitosa";
+            TempData["CreateMessage"] = mensaje;
 
-                if (!resultado)
-                {
-                    ModelState.AddModelError(string.Empty, mensaje);
-                    return Page();
-                }
-
-                return RedirectToPage();
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return Page();
-            }
+            return RedirectToPage(new { pageNumber = CurrentPage });
         }
     }
 }
