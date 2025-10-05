@@ -1,0 +1,154 @@
+﻿@page
+@model Reloj_Marcador.Areas.IndexModel
+@{
+    ViewData["Title"] = "Áreas";
+    Layout = "_Layout";
+}
+<link href="~/css/areas.css" rel="stylesheet" />
+
+<h1>Administración de áreas</h1>
+
+<p>
+    <a class="btn btn-primary" asp-page="Create">Nuevo</a>
+</p>
+
+            <!-- Table -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" style="width: 100%;">
+                    <thead style="background-color: #36404a; color: white;">
+                        <tr>
+                            <th style="width: 20%;">Identificador del Área</th>
+                            <th>Nombre del Área</th>
+                            <th>Jefe del Área</th>
+                            <th style="width: 15%;" class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Areas)
+                        {
+                            <tr>
+                                <td>@item.ID_Area</td>
+                                <td>@item.Nombre_Area</td>
+                                <td>@item.Jefe</td>
+                                <td class="text-center">
+                                    <a asp-page="Edit" asp-route-id="@item.ID_Area"
+                                       class="btn btn-primary btn-circle btn-sm"
+                                       title="Actualizar">
+                                        <i class="fas fa-edit"></i>
+                                    </a> 
+                                    <button type="button"
+                                            class="btn btn-danger btn-circle btn-sm"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"
+                                            data-id="@item.ID_Area"
+                                            data-nombre="@item.Nombre_Area"
+                                            data-jefe="@item.Jefe"
+                                            title="Eliminar">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+<nav>
+    <ul class="pagination justify-content-center">
+        <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+            <a class="page-link" asp-route-pageNumber="@(Model.CurrentPage - 1)">Anterior</a>
+        </li>
+
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a class="page-link" asp-route-pageNumber="@i">@i</a>
+            </li>
+        }
+
+        <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+            <a class="page-link" asp-route-pageNumber="@(Model.CurrentPage + 1)">Siguiente</a>
+        </li>
+    </ul>
+</nav>
+  
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-left-primary shadow">
+
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title font-weight-bold" id="deleteModalLabel">
+                    <i class="fas fa-exclamation-triangle mr-2"></i> Confirmar eliminación
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body text-gray-800">
+                ¿Realmente desea eliminar el elemento seleccionado?
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times mr-1"></i> No
+                </button>
+                <form method="post" asp-page-handler="Delete">
+                    <input type="hidden" name="IdArea" id="idArea" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt mr-1"></i> Si
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="systemMessageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">@TempData.Peek("CreateTitle")</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @TempData.Peek("CreateMessage")
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+	<script src="~/js/areas.js"></script>
+	<script src="~/js/paginacion.js"></script>
+    <script>
+         //Se encarga del modal De "Eliminar"
+                $('#deleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); 
+            var id = button.data('id');
+            var nombre = button.data('nombre');
+
+            var modal = $(this);
+            modal.find('#idArea').val(id);
+            modal.find('#nombreArea').text(nombre);
+        });
+
+        //Se encarga del modal normal
+         $(document).ready(function () {
+            var modalMessage = "@(TempData["CreateMessage"] ?? "")";
+            if (modalMessage.length > 0) {
+        $("#systemMessageModal").modal("show");
+            }
+        });
+
+
+    </script>
+}

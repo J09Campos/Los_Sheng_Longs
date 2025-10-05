@@ -1,0 +1,22 @@
+﻿@page
+@model Reloj_Marcador.Pages.Funcionarios.DeleteModel
+@{
+    ViewData["Title"] = "Eliminar Funcionario";
+}
+
+<h1>Eliminar Funcionario</h1>
+
+<hr />
+<div>
+    <h4>¿Está seguro que desea eliminar este funcionario?</h4>
+    <div class="mb-3">
+        <h5>@Model.Funcionario!.Nombre @Model.Funcionario.Apellido</h5>
+        <p><strong>Identificación:</strong> @Model.Funcionario.Identificacion</p>
+        <p><strong>Correo:</strong> @Model.Funcionario.Correo</p>
+    </div>
+    <form method="post">
+        <input type="hidden" asp-for="Funcionario.Identificacion" />
+        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+        <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>

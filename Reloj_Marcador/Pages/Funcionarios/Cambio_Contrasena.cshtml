@@ -1,0 +1,70 @@
+﻿@page
+@model Reloj_Marcador.Pages.Funcionarios.Cambio_ContrasenaModel
+@{
+    ViewData["Title"] = "Cambio de clave";
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" rel="stylesheet" />
+<h1>Cambio de clave</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <!-- Muestra todos los errores generales, incluidos los del SP con el Signal 45000 -->
+           @*  <div asp-validation-summary="All" class="text-danger"></div> *@
+
+            <div class="form-group">
+                <label asp-for="Funcionario.Identificacion" class="control-label">Identificador del Funcionario</label>
+                <input asp-for="Funcionario.Identificacion" id="identificacion" name="identificacion" class="form-control" readonly />
+                <span asp-validation-for="Funcionario.Identificacion" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Nueva Contraseña</label>
+                <input id="contrasena" name="contrasena" class="form-control" value="@Model.contrasena" />
+                <span class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group">
+                <input type="submit" value="Aceptar" class="btn btn-primary" asp-page-handler="Aceptar" />
+                <input type="submit" value="Autogenerar" class="btn btn-primary" asp-page-handler="Autogenerar" />
+                <a class="btn btn-secondary" asp-page="Index">Volver</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<!-- Modal para mensajes -->
+<div class="modal fade" id="systemMessageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">@TempData.Peek("ChangeTitle")</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @TempData.Peek("ChangeMessage")
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var modalMessage = "@(TempData["ChangeMessage"] ?? "")";
+            if (modalMessage.length > 0) {
+        $("#systemMessageModal").modal("show");
+            }
+        });
+    </script>
+}
