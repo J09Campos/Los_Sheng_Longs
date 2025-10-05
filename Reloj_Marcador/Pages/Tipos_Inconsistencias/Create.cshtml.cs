@@ -25,10 +25,6 @@ namespace Reloj_Marcador.Pages.Tipos_Inconsistencias
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
 
             await _inconsistenciasService.CRUDAsync(Inconsistencia, "Crear");
 

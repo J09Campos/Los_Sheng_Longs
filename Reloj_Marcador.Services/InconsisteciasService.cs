@@ -42,6 +42,11 @@ namespace Reloj_Marcador.Services
         {
             if (accion == "Crear" || accion == "Actualizar")
             {
+                if (string.IsNullOrEmpty(inconsistencia.Nombre_Inconsistencia))
+                {
+                    inconsistencia.Mensaje = "El nombre de la inconsistencia es obligatorio.";
+                    return false;
+                }
                 if (inconsistencia.Nombre_Inconsistencia.Length > 40)
                 {
                     inconsistencia.Mensaje = "El nombre de la inconsistencia no puede ser mayor a 40 caracteres.";
