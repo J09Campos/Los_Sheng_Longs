@@ -6,7 +6,16 @@ using Reloj_Marcador.Services.Abstract;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Logging.SetMinimumLevel(LogLevel.Information);
 builder.Services.AddRazorPages();
+
+// Necesario para obtener usuario logueado
+builder.Services.AddHttpContextAccessor();
+
+// Bitacora
+
+builder.Services.AddScoped<BitacoraRepository>();
+builder.Services.AddScoped<IBitacoraService, BitacoraService>();
 
 //Funcionarios
 builder.Services.AddScoped<FuncionariosRepository>();
@@ -37,6 +46,14 @@ builder.Services.AddScoped<IRolesService, RolesService>();
 builder.Services.AddScoped<TiposIdentificacionRepository>();
 builder.Services.AddScoped<ITiposIdentificacionService, TiposIdentificacionService>();
 
+builder.Services.AddScoped<DetalleHorarioRepository>();
+builder.Services.AddScoped<IDetalleHorarioService, DetalleHorarioService>();
+
+builder.Services.AddScoped<HorarioRepository>();
+builder.Services.AddScoped<IHorarioService, HorarioService>();
+
+builder.Services.AddScoped<MotivoRepository>();
+builder.Services.AddScoped<IMotivoService, MotivoService>();
 
 builder.Services.AddDistributedMemoryCache();
 

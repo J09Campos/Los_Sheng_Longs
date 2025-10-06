@@ -2,16 +2,21 @@
 using Reloj_Marcador.Repository;
 using Reloj_Marcador.Services.Abstract;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
 
 namespace Reloj_Marcador.Services;
 
 public class FuncionariosServices : IFuncionariosService
 {
     private readonly FuncionariosRepository _funcionarioRepository;
+    private readonly IBitacoraService _bitacoraService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public FuncionariosServices(FuncionariosRepository funcionarioRepository)
+    public FuncionariosServices(FuncionariosRepository funcionarioRepository, IBitacoraService bitacoraService, IHttpContextAccessor httpContextAccessor)
     {
         _funcionarioRepository = funcionarioRepository;
+        _bitacoraService = bitacoraService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<IEnumerable<Funcionarios_Usuarios>> ListarAsync()
@@ -23,17 +28,96 @@ public class FuncionariosServices : IFuncionariosService
     public async Task<int> CrearAsync(Funcionarios_Usuarios funcionario)
     {
         ValidarFuncionario(funcionario);
-        return await _funcionarioRepository.CrearAsync(funcionario);
+        var resultado = await _funcionarioRepository.CrearAsync(funcionario);
+
+        if (resultado > 0)
+        {
+            try
+            {
+                // Obtener usuario actual desde HttpContext
+                string usuario = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Anonimo";
+
+                // Registrar acción en bitácora
+                await _bitacoraService.RegistrarAsync(usuario, "Se Creo Funcionario", funcionario);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error registrando bitácora: {ex.Message}");
+            }
+        }
+
+        return resultado;
     }
 
     public async Task<int> ActualizarAsync(Funcionarios_Usuarios funcionario)
     {
+        var funcionarioAnterior = await _funcionarioRepository.ObtenerPorIdAsync(funcionario.Identificacion);
+        if (funcionarioAnterior == null)
+            throw new ArgumentException("El funcionario no existe");
+
         ValidarFuncionario(funcionario);
-        return await _funcionarioRepository.ActualizarAsync(funcionario);
+        var resultado = await _funcionarioRepository.ActualizarAsync(funcionario);
+        if (resultado > 0)
+        {
+            try
+            {
+                // Obtener usuario logueado
+                string usuario = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Anonimo";
+
+                // Crear objeto con antes y después
+                var datosBitacora = new
+                {
+                    Antes = funcionarioAnterior,
+                    Ahora = funcionario
+                };
+
+                // Registrar en bitácora
+                await _bitacoraService.RegistrarAsync(usuario, "Se Actualizó Funcionario", datosBitacora);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error registrando bitácora: {ex.Message}");
+            }
+        }
+
+        return resultado;
     }
 
+
+    //public async Task<int> EliminarAsync(string identificacion)
+    //    => await _funcionarioRepository.EliminarAsync(identificacion);
+
     public async Task<int> EliminarAsync(string identificacion)
-        => await _funcionarioRepository.EliminarAsync(identificacion);
+    {
+        // Obtener los datos antes de eliminar
+        var funcionarioEliminado = await _funcionarioRepository.ObtenerPorIdAsync(identificacion);
+
+        if (funcionarioEliminado == null)
+            throw new ArgumentException("El funcionario no existe");
+
+        // Eliminar en la BD
+        var resultado = await _funcionarioRepository.EliminarAsync(identificacion);
+
+        if (resultado > 0)
+        {
+            try
+            {
+                // Obtener usuario logueado
+                string usuario = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Anonimo";
+
+                // Registrar en bitácora todos los datos eliminados
+                await _bitacoraService.RegistrarAsync(usuario, "Se Eliminó Funcionario", funcionarioEliminado);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error registrando bitácora: {ex.Message}");
+            }
+        }
+
+        return resultado;
+    }
+
+
 
     public async Task<IEnumerable<TipoIdentificacion>> ObtenerTiposIdentificacionAsync()
         => await _funcionarioRepository.ObtenerTiposIdentificacionAsync();

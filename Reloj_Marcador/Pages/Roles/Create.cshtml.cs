@@ -26,13 +26,13 @@ namespace Reloj_Marcador.Pages.Roles
             try
             {
                 await _rolesService.CrearAsync(Rol);
-                TempData["CreateTitle10"] = "Operación Exitosa";
+                TempData["CreateTitle10"] = "Operación Exitosa.";
                 TempData["CreateMessage10"] = "Rol creado con éxito.";
                 return RedirectToPage("Index");
             }
             catch (Exception ex)
             {
-                TempData["CreateTitle5"] = "Operación Fallida";
+                TempData["CreateTitle5"] = "Operación Fallida.";
                 TempData["CreateMessage5"] = ex.Message;
                 ModelState.AddModelError(string.Empty, ex.Message);
                 return Page();

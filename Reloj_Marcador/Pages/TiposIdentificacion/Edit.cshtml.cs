@@ -42,7 +42,7 @@ namespace Reloj_Marcador.Pages.TiposIdentificacion
             }
             catch (Exception ex)
             {
-                TempData["CreateTitle8"] = "Operación Fallida";
+                TempData["CreateTitle8"] = "Operación Fallida.";
                 TempData["CreateMessage8"] = ex.Message;
                 ModelState.AddModelError("", ex.Message);
                 return Page();

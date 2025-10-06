@@ -32,7 +32,7 @@ namespace Reloj_Marcador.Pages.TiposIdentificacion
             }
             catch (Exception ex)
             {
-                TempData["CreateTitle9"] = "Operación Fallida";
+                TempData["CreateTitle9"] = "Operación Fallida.";
                 TempData["CreateMessage9"] = ex.Message;
                 return Page();
             }

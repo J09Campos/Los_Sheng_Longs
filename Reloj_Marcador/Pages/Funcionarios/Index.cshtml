@@ -5,7 +5,7 @@
     Layout = "_Layout";
 }
 
-<h1>Administración de Funcionarios</h1>
+<h1>Administración de Funcionarios y Usuarios</h1>
 
 <div class="mb-3 d-flex justify-content-start align-items-center">
     <a class="btn btn-primary mr-2" asp-page="Create">
@@ -16,8 +16,12 @@
         <i class="mr-1"></i> Cambio de clave
     </button>
 
-    <button id="btnAdminAreas" class="btn btn-primary" disabled>
+    <button id="btnAdminAreas" class="btn btn-primary mr-2" disabled>
         <i class="mr-1"></i> Administración de áreas
+    </button>
+
+    <button id="btnAdminHorarios" class="btn btn-primary mr-2" disabled>
+        <i class="mr-1"></i> Administración de horarios
     </button>
 </div>
 
@@ -165,6 +169,7 @@
 
             $('#btnCambioClave').prop('disabled', false);
             $('#btnAdminAreas').prop('disabled', false);
+            $('#btnAdminHorarios').prop('disabled', false);
         });
 
         $('#btnCambioClave').click(function () {
@@ -176,6 +181,12 @@
         $('#btnAdminAreas').click(function () {
             if (selectedFuncionarioId) {
                 window.location.href = '@Url.Page("Funcionario_Areas")?identificacion=' + selectedFuncionarioId;
+            }
+        });
+
+        $('#btnAdminHorarios').click(function () {
+            if (selectedFuncionarioId) {
+                window.location.href = '@Url.Page("/Horarios/Index")?FuncionarioSeleccionado=' + selectedFuncionarioId;
             }
         });
     </script>

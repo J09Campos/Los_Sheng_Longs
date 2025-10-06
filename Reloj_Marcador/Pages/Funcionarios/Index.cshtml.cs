@@ -40,39 +40,33 @@ namespace Reloj_Marcador.Pages.Funcionarios
                 .ToList();
         }
 
-        public async Task<IActionResult> OnPostDeleteAsync()
+        public async Task<IActionResult> OnPostDeleteAsync(string Identificacion)
         {
-            if (string.IsNullOrEmpty(Identificacion))
-            {
-                TempData["CreateMessage1"] = "No se recibió una identificación válida.";
-                TempData["CreateTitle1"] = "Operación Fallida";
-                return RedirectToPage();
-            }
-
             try
             {
-                var rowsAffected = await _funcionariosService.EliminarAsync(Identificacion);
-
-                if (rowsAffected == 0)
-                {
-                    TempData["CreateMessage1"] = "No se pudo eliminar el funcionario.";
-                    TempData["CreateTitle1"] = "Operación Fallida";
-                }
+                await _funcionariosService.EliminarAsync(Identificacion);
+                return RedirectToPage();
             }
             catch (MySql.Data.MySqlClient.MySqlException ex)
             {
                 if (ex.Message.Contains("datos relacionados"))
                 {
                     TempData["CreateMessage1"] = "No se puede eliminar un registro con datos relacionados.";
-                    TempData["CreateTitle1"] = "Operación Fallida";
                 }
                 else
                 {
                     TempData["CreateMessage1"] = "Ocurrió un error inesperado al eliminar.";
-                    TempData["CreateTitle1"] = "Operación Fallida";
                 }
+
+                TempData["CreateTitle1"] = "Operación Fallida.";
+                return RedirectToPage();
             }
-            return RedirectToPage();
+            catch (Exception ex)
+            {
+                TempData["CreateMessage1"] = ex.Message;
+                TempData["CreateTitle1"] = "Operación Exitosa.";
+                return RedirectToPage();
+            }
         }
     }
 }

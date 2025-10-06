@@ -41,41 +41,34 @@ namespace Reloj_Marcador.Pages.TiposIdentificacion
                 .ToList();
         }
 
-        public async Task<IActionResult> OnPostDeleteAsync()
+        public async Task<IActionResult> OnPostDeleteAsync(string IdTipo)
         {
-            if (string.IsNullOrEmpty(IdTipo))
-            {
-                TempData["CreateMessage0"] = "No se recibió un tipo de identificación válido.";
-                TempData["CreateTitle0"] = "Operación Fallida";
-                return RedirectToPage();
-            }
-
             try
             {
-                var rowsAffected = await _service.EliminarAsync(IdTipo);
-
-                if (rowsAffected == 0)
-                {
-                    TempData["CreateMessage0"] = "No se pudo eliminar el tipo de identificación.";
-                    TempData["CreateTitle0"] = "Operación Fallida";
-                }
+                await _service.EliminarAsync(IdTipo);
+                return RedirectToPage();
             }
             catch (MySql.Data.MySqlClient.MySqlException ex)
             {
-                if (ex.Message.Contains("porque está siendo usado por funcionarios") ||
+                if (ex.Message.Contains("No se puede eliminar un registro con datos relacionados") ||
                     ex.Message.Contains("foreign key constraint fails"))
                 {
-                    TempData["CreateMessage0"] = "No se puede eliminar este tipo de identificación porque está asociado a uno o más funcionarios.";
-                    TempData["CreateTitle0"] = "Operación Fallida";
+                    TempData["CreateMessage0"] = "No se puede eliminar un registro con datos relacionados.";
                 }
                 else
                 {
                     TempData["CreateMessage0"] = "Ocurrió un error inesperado al intentar eliminar.";
-                    TempData["CreateTitle0"] = "Operación Fallida";
                 }
-            }
 
-            return RedirectToPage();
+                TempData["CreateTitle0"] = "Operación Fallida.";
+                return RedirectToPage();
+            }
+            catch (Exception ex)
+            {
+                TempData["CreateMessage0"] = "Ocurrió un error inesperado: " + ex.Message;
+                TempData["CreateTitle0"] = "Operación Fallida.";
+                return RedirectToPage();
+            }
         }
     }
 }

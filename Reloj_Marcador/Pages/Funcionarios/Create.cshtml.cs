@@ -51,13 +51,13 @@ namespace Reloj_Marcador.Pages.Funcionarios
             try
             {
                 await _funcionariosService.CrearAsync(Funcionario);
-                TempData["CreateTitle1"] = "Operación Exitosa";
+                TempData["CreateTitle1"] = "Operación Exitosa.";
                 TempData["CreateMessage1"] = "Funcionario creado con éxito.";
                 return RedirectToPage("Index");
             }
             catch (Exception ex)
             {
-                TempData["CreateTitle3"] = "Operación Fallida";
+                TempData["CreateTitle3"] = "Operación Fallida.";
                 TempData["CreateMessage3"] = ex.Message;
 
                 TiposIdentificacion = await _funcionariosService.ObtenerTiposIdentificacionAsync() ?? new List<TipoIdentificacion>();

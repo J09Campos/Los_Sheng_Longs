@@ -58,7 +58,7 @@ namespace Reloj_Marcador.Pages.Funcionarios
             }
             catch (Exception ex)
             {
-                TempData["CreateTitle4"] = "Operación Fallida";
+                TempData["CreateTitle4"] = "Operación Fallida.";
                 TempData["CreateMessage4"] = ex.Message;
 
                 TiposIdentificacion = await _funcionariosService.ObtenerTiposIdentificacionAsync() ?? new List<TipoIdentificacion>();

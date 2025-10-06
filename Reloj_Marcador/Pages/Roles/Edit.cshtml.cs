@@ -41,7 +41,7 @@ namespace Reloj_Marcador.Pages.Roles
             }
             catch (Exception ex)
             {
-                TempData["CreateTitle6"] = "Operación Fallida";
+                TempData["CreateTitle6"] = "Operación Fallida.";
                 TempData["CreateMessage6"] = ex.Message;
                 return Page();
             }

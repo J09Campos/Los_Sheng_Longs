@@ -1,22 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Reloj_Marcador.Entities;
 using Reloj_Marcador.Repository;
 using Reloj_Marcador.Services.Abstract;
+using Microsoft.AspNetCore.Http;
 
 namespace Reloj_Marcador.Services
 {
     public class AreaServices : IAreaService
     {
         private readonly AreaRepository _areaRepository;
+        private readonly IBitacoraService _bitacoraService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AreaServices(AreaRepository areaRepository)
+        public AreaServices(
+            AreaRepository areaRepository,
+            IBitacoraService bitacoraService,
+            IHttpContextAccessor httpContextAccessor)
         {
             _areaRepository = areaRepository;
+            _bitacoraService = bitacoraService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public Task<IEnumerable<Area>> GetAllAsync()
@@ -31,6 +37,7 @@ namespace Reloj_Marcador.Services
 
         public async Task<(bool Resultado, string Mensaje)> InsertAsync(Area area)
         {
+            // Validaciones
             if (string.IsNullOrWhiteSpace(area.ID_Area))
                 return (false, "El identificador del área no debe ser nulo.");
 
@@ -49,11 +56,25 @@ namespace Reloj_Marcador.Services
 
             try
             {
-                return await _areaRepository.CRUDAsync(area, 1);
+                var resultado = await _areaRepository.CRUDAsync(area, 1);
+
+                if (resultado.Resultado)
+                {
+                    string usuario = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Anonimo";
+                    var datosBitacora = new
+                    {
+                        area.ID_Area,
+                        area.Nombre_Area,
+                        area.Jefe
+                    };
+
+                    await _bitacoraService.RegistrarAsync(usuario, "Se creó un área", datosBitacora);
+                }
+
+                return resultado;
             }
             catch (MySql.Data.MySqlClient.MySqlException ex)
             {
-
                 return (false, ex.Message);
             }
             catch (Exception ex)
@@ -87,11 +108,27 @@ namespace Reloj_Marcador.Services
 
             try
             {
-                return await _areaRepository.CRUDAsync(area, 2);
+                // Obtener estado anterior
+                var areaAnterior = await _areaRepository.GetByIdAsync(area.ID_Area);
+
+                var resultado = await _areaRepository.CRUDAsync(area, 2);
+
+                if (resultado.Resultado && areaAnterior != null)
+                {
+                    var datosBitacora = new
+                    {
+                        Antes = new { areaAnterior.ID_Area, areaAnterior.Nombre_Area, areaAnterior.Jefe },
+                        Ahora = new { area.ID_Area, area.Nombre_Area, area.Jefe }
+                    };
+
+                    string usuario = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Anonimo";
+                    await _bitacoraService.RegistrarAsync(usuario, "Se actualizó un área", datosBitacora);
+                }
+
+                return resultado;
             }
             catch (MySql.Data.MySqlClient.MySqlException ex)
             {
-
                 return (false, ex.Message);
             }
             catch (Exception ex)
@@ -102,7 +139,36 @@ namespace Reloj_Marcador.Services
 
         public async Task<(bool Resultado, string Mensaje)> DeleteAsync(Area area)
         {
-            return await _areaRepository.CRUDAsync(area, 3);
+            try
+            {
+                // Obtener antes de eliminar
+                var areaEliminada = await _areaRepository.GetByIdAsync(area.ID_Area);
+
+                var resultado = await _areaRepository.CRUDAsync(area, 3);
+
+                if (resultado.Resultado && areaEliminada != null)
+                {
+                    var datosBitacora = new
+                    {
+                        areaEliminada.ID_Area,
+                        areaEliminada.Nombre_Area,
+                        areaEliminada.Jefe
+                    };
+                    string usuario = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Anonimo";
+                    await _bitacoraService.RegistrarAsync(usuario, "Se eliminó un área", datosBitacora);
+                }
+
+                return resultado;
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                return (false, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
         }
     }
 }
+
