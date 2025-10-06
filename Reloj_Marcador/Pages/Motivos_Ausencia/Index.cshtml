@@ -22,7 +22,7 @@
 <h3>Lista de Motivos</h3>
 
 <table class="table table-striped table-hover">
-    <thead class="table-light">
+    <thead class="table-dark">
         <tr>
             <th>ID Motivo</th>
             <th>Nombre del Motivo</th>
@@ -35,24 +35,28 @@
             <tr>
                 <td>@motivo.ID_Motivo</td>
                 <td>
-                   
                     <form method="post" asp-page-handler="EditarMotivo" asp-route-id="@motivo.ID_Motivo" class="d-flex">
                         <input type="text" name="MotivoEnEdicion.Nombre_Motivo" value="@motivo.Nombre_Motivo" class="form-control me-2" required maxlength="40" />
                         <button type="submit" class="btn btn-primary">Guardar</button>
                     </form>
                 </td>
                 <td>
-
-                    <form method="post" asp-page-handler="EliminarMotivo" class="d-inline">
+                    <!-- Botón de eliminar con modal -->
+                    <form method="post" asp-page-handler="EliminarMotivo" class="delete-form d-inline">
                         <input type="hidden" name="id" value="@motivo.ID_Motivo" />
-                        <button type="submit" class="btn btn-primary" onclick="return confirm('¿Seguro?')">Eliminar</button>
+                        <button type="button" class="btn btn-primary btn-open-modal"
+                                data-bs-toggle="modal"
+                                data-bs-target="#confirmModal"
+                                data-message="¿Eliminar el motivo '@motivo.Nombre_Motivo'?"
+                                data-form-id="@motivo.ID_Motivo">
+                            Eliminar
+                        </button>
                     </form>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-
 
 @if (!ViewData.ModelState.IsValid)
 {
@@ -64,6 +68,53 @@
     </div>
 }
 
-@section Scripts{
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="confirmModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">¿Deseas eliminar este motivo?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmDelete">Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        let formToSubmit = null;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = document.getElementById('confirmModal');
+            const confirmMessage = document.getElementById('confirmMessage');
+            const btnConfirmDelete = document.getElementById('btnConfirmDelete');
+
+            // Cuando se hace clic en un botón "Eliminar"
+            document.querySelectorAll('.btn-open-modal').forEach(button => {
+                button.addEventListener('click', function () {
+                    const form = this.closest('form');
+                    formToSubmit = form; // guardar referencia
+                    const message = this.getAttribute('data-message');
+                    confirmMessage.textContent = message;
+                });
+            });
+
+            // Cuando el usuario confirma
+            btnConfirmDelete.addEventListener('click', function () {
+                if (formToSubmit) {
+                    formToSubmit.submit();
+                    formToSubmit = null;
+                    const modalInstance = bootstrap.Modal.getInstance(modal);
+                    modalInstance.hide();
+                }
+            });
+        });
+    </script>
 }

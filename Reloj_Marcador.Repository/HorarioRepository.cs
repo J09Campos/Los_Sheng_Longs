@@ -62,9 +62,30 @@ namespace Reloj_Marcador.Repository
         public async Task<int> DeleteAsync(int id)
         {
             using var connection = _dbConnectionFactory.CreateConnection();
-            var sql = @"DELETE FROM horario WHERE ID_Horario = @Id";
-            return await connection.ExecuteAsync(sql, new { Id = id });
+            connection.Open(); 
+
+            using var transaction = connection.BeginTransaction();
+
+            try
+            {
+                var deleteDetallesSql = "DELETE FROM detalle_horario WHERE ID_Horario = @Id";
+                await connection.ExecuteAsync(deleteDetallesSql, new { Id = id }, transaction);
+
+                var deleteHorarioSql = "DELETE FROM horario WHERE ID_Horario = @Id";
+                var rowsAffected = await connection.ExecuteAsync(deleteHorarioSql, new { Id = id }, transaction);
+
+                transaction.Commit();
+                return rowsAffected;
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
         }
+
+
+
 
         //Listar horarios por funcionario
         public async Task<IEnumerable<Horario>> GetByFuncionarioAsync(string idFuncionario)

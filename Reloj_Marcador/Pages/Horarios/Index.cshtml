@@ -7,7 +7,7 @@
 <div class="container">
     <h2 class="mt-4">Gestión de Horarios del Funcionario: @Model.FuncionarioSeleccionado</h2>
 
-    <!-- Mostrar mensajes de éxito/error -->
+
     @if (TempData["Success"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -71,11 +71,19 @@
 
                                 <a href="@Url.Page("./Index", new { idHorario = horario.ID_Horario })" class="btn btn-primary">Ver Detalles</a>
 
-                         
-                                <form method="post" asp-page-handler="Delete" asp-route-id="@horario.ID_Horario" style="display: inline-block;" onsubmit="return confirm('¿Eliminar este horario y sus detalles?');">
+
+                                <form method="post" asp-page-handler="Delete" asp-route-id="@horario.ID_Horario"
+                                      class="delete-form" style="display: inline-block;">
                                     <input type="hidden" name="FuncionarioSeleccionado" value="@Model.FuncionarioSeleccionado" />
-                                    <button type="submit" class="btn btn-primary">Eliminar</button>
+                                    <button type="button" class="btn btn-primary btn-open-modal"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#confirmModal"
+                                            data-form-id="@horario.ID_Horario"
+                                            data-message="¿Eliminar el horario y sus detalles?">
+                                        Eliminar
+                                    </button>
                                 </form>
+
                             </td>
                         </tr>
                     }
@@ -93,7 +101,6 @@
         <input type="hidden" asp-for="NuevoHorario.ID_Funcionario" value="@Model.FuncionarioSeleccionado" />
         <div class="row g-3 mb-3">
             <div class="col-md-4">
-                <label asp-for="NuevoHorario.ID_Area" class="form-label">Área *</label>
                 <select asp-for="NuevoHorario.ID_Area" class="form-select" required>
                     <option value="">Seleccione un área</option>
                     @if (Model.AreasDisponibles != null)
@@ -107,12 +114,11 @@
                 <div asp-validation-for="NuevoHorario.ID_Area" class="form-text"></div>
             </div>
             <div class="col-md-6">
-                <label asp-for="NuevoHorario.Descripcion" class="form-label">Descripción *</label>
-                <input asp-for="NuevoHorario.Descripcion" type="text" class="form-control" required maxlength="255" placeholder="Ej. Horario diurno semanal" />
+                <input asp-for="NuevoHorario.Descripcion" type="text" class="form-control" required maxlength="255" placeholder="Descripción" />
                 <div asp-validation-for="NuevoHorario.Descripcion" class="form-text"></div>
             </div>
             <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100">Guardar Horario</button>
+                <button type="submit" class="btn btn-primary w-100">Guardar</button>
             </div>
         </div>
     </form>
@@ -137,7 +143,6 @@
 
             <div class="row g-3 mb-3">
                 <div class="col-md-2">
-                    <label class="form-label">Día *</label>
                     <select name="Dia" class="form-select" required>
                         <option value="">Seleccione día</option>
                         <option value="Lunes">Lunes</option>
@@ -150,28 +155,24 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label">Hora Ingreso *</label>
-                    <input type="number" name="Hora_Ingreso" class="form-control" min="0" max="23" required placeholder="Ej. 9" />
+                    <input type="number" name="Hora_Ingreso" class="form-control" min="0" max="23" required placeholder="Hora Ingreso" />
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label">Minuto Ingreso *</label>
-                    <input type="number" name="Minuto_Ingreso" class="form-control" min="0" max="59" required placeholder="Ej. 0" />
+                    <input type="number" name="Minuto_Ingreso" class="form-control" min="0" max="59" required placeholder="Minuto Ingreso" />
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label">Hora Salida *</label>
-                    <input type="number" name="Hora_Salida" class="form-control" min="0" max="23" required placeholder="Ej. 18" />
+                    <input type="number" name="Hora_Salida" class="form-control" min="0" max="23" required placeholder="Hora Salida" />
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label">Minuto Salida *</label>
-                    <input type="number" name="Minuto_Salida" class="form-control" min="0" max="59" required placeholder="Ej. 0" />
+                    <input type="number" name="Minuto_Salida" class="form-control" min="0" max="59" required placeholder="Minuto Salida" />
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary">Agregar Detalle</button>
+                    <button type="submit" class="btn btn-primary">Agregar</button>
                 </div>
             </div>
         </form>
 
-        <!-- Tabla de Detalles Actuales -->
+
         <h4>Detalles Actuales</h4>
         @if (!Model.Detalles.Any())
         {
@@ -199,9 +200,18 @@
                                 <td>@($"{detalle.Hora_Ingreso:D2}:{detalle.Minuto_Ingreso:D2}")</td>
                                 <td>@($"{detalle.Hora_Salida:D2}:{detalle.Minuto_Salida:D2}")</td>
                                 <td>
-                                    <form method="post" asp-page-handler="EliminarDetalle" asp-route-id="@detalle.Id_Detalle" asp-route-idHorario="@Model.HorarioSeleccionado.ID_Horario" style="display: inline-block;" onsubmit="return confirm('¿Eliminar este detalle?');">
+                                    <form method="post" asp-page-handler="EliminarDetalle"
+                                          asp-route-id="@detalle.Id_Detalle"
+                                          asp-route-idHorario="@Model.HorarioSeleccionado.ID_Horario"
+                                          class="delete-form" style="display: inline-block;">
                                         <input type="hidden" name="FuncionarioSeleccionado" value="@Model.FuncionarioSeleccionado" />
-                                        <button type="submit" class="btn btn-primary">Eliminar</button>
+                                        <button type="button" class="btn btn-primary btn-open-modal"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirmModal"
+                                                data-form-id="@detalle.Id_Detalle"
+                                                data-message="¿Eliminar este detalle?">
+                                            Eliminar
+                                        </button>
                                     </form>
                                 </td>
                             </tr>
@@ -213,7 +223,7 @@
 
   
         <div class="mt-3">
-            <a href="@Url.Page("./Index")" class="btn btn-secondary">Volver a Lista de Horarios</a>
+            <a href="@Url.Page("./Index")" class="btn btn-secondary">Volver</a>
         </div>
     }
     else
@@ -236,6 +246,53 @@
     }
 </div>
 
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="confirmModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">¿Estás seguro de eliminar este elemento?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmDelete">Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        let formToSubmit = null;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = document.getElementById('confirmModal');
+            const confirmMessage = document.getElementById('confirmMessage');
+            const btnConfirmDelete = document.getElementById('btnConfirmDelete');
+
+          
+            document.querySelectorAll('.btn-open-modal').forEach(button => {
+                button.addEventListener('click', function () {
+                    const form = this.closest('form');
+                    formToSubmit = form; 
+                    const message = this.getAttribute('data-message');
+                    confirmMessage.textContent = message;
+                });
+            });
+
+            
+            btnConfirmDelete.addEventListener('click', function () {
+                if (formToSubmit) {
+                    formToSubmit.submit();
+                    formToSubmit = null;
+                    const modalInstance = bootstrap.Modal.getInstance(modal);
+                    modalInstance.hide();
+                }
+            });
+        });
+    </script>
 }
