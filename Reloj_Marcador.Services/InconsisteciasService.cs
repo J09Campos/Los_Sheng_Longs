@@ -1,4 +1,6 @@
-﻿using Reloj_Marcador.Repository;
+﻿using Microsoft.AspNetCore.Http;
+using Reloj_Marcador.Entities;
+using Reloj_Marcador.Repository;
 using Reloj_Marcador.Services.Abstract;
 using System;
 using System.Collections.Generic;
@@ -12,10 +14,15 @@ namespace Reloj_Marcador.Services
     public class InconsisteciasService : IInconsistenciasService
     {
         private readonly InconsistenciasRepository _inconsisteciasRepository;
+        private readonly IBitacoraService _bitacoraService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public InconsisteciasService(InconsistenciasRepository inconsisteciasRepository)
+        public InconsisteciasService(InconsistenciasRepository inconsisteciasRepository, IBitacoraService bitacoraService,
+            IHttpContextAccessor httpContextAccessor)
         {
             _inconsisteciasRepository = inconsisteciasRepository;
+            _bitacoraService = bitacoraService;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<Entities.Inconsistencias?> GetByIdAsync(string id)
         {
@@ -27,14 +34,41 @@ namespace Reloj_Marcador.Services
         }
         public async Task<(bool Resultado, string Mensaje)> CRUDAsync(Entities.Inconsistencias inconsistencia, string accion)
         {
-            if (ValidarInconsistencias(inconsistencia, accion))
+            try
             {
-                return await _inconsisteciasRepository.CRUDAsync(inconsistencia, accion);
+                if (ValidarInconsistencias(inconsistencia, accion))
+                {
+                    var resultado = await _inconsisteciasRepository.CRUDAsync(inconsistencia, accion);
+                    if (resultado.Resultado)
+                    {
+                        string usuario = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Anonimo";
+                        var datosBitacora = new
+                        {
+                            inconsistencia.Id_Inconsistencia,
+                            inconsistencia.Nombre_Inconsistencia,
+                            accion,
+                        };
+
+                        await _bitacoraService.RegistrarAsync(usuario, "Realizo cambios de tipos de inconsistencias", datosBitacora);
+                    }
+
+                    return resultado;
+                }
+                else
+                {
+                    return (false, inconsistencia.Mensaje);
+                }
+
             }
-            else
+            catch (MySql.Data.MySqlClient.MySqlException ex)
             {
-                return (false, inconsistencia.Mensaje);
+                return (false, ex.Message);
             }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+           
         }
         //Validaciones de entrada de datos
 

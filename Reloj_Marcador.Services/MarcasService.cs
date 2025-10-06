@@ -1,4 +1,6 @@
-﻿using Reloj_Marcador.Services.Abstract;
+﻿using Microsoft.AspNetCore.Http;
+using Reloj_Marcador.Entities;
+using Reloj_Marcador.Services.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +13,14 @@ namespace Reloj_Marcador.Services
     public class MarcasService : IMarcasService
     {
         private readonly Repository.MarcasRepository _marcasRepository;
-
-        public MarcasService(Repository.MarcasRepository marcasRepository)
+        private readonly IBitacoraService _bitacoraService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public MarcasService(Repository.MarcasRepository marcasRepository, IBitacoraService bitacoraService,
+            IHttpContextAccessor httpContextAccessor)
         {
             _marcasRepository = marcasRepository;
+            _bitacoraService = bitacoraService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public Task<IEnumerable<(string Id_Area, string Nombre_Area)>> GetAllAreaByID(string id)
@@ -22,16 +28,34 @@ namespace Reloj_Marcador.Services
             return _marcasRepository.GetAllAreaByID(id);
         }
 
-        public Task<(bool Resultado, string Mensaje)> ValidateUser(Entities.Marcas marca)
+        public async Task<(bool Resultado, string Mensaje)> ValidateUser(Entities.Marcas marca)
         {
-            if (!ValidarUsuario(marca))
+            if (ValidarUsuario(marca))
             {
-                return Task.FromResult((false, marca.Mensaje));
+                var resultado = await _marcasRepository.ValidateUser(marca);
+                if (resultado.Resultado)
+                {
+                    string usuario = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Anonimo";
+                    var datosBitacora = new
+                    {
+                        marca.Identificacion,
+                        marca.Descripcion,
+                        marca.Id_Area,
+                        marca.Tipo_Marca
+                    };
+
+                    await _bitacoraService.RegistrarAsync(usuario, "Marco", datosBitacora);
+                }
+
+                return resultado;
+
             }
             else
             {
-                return _marcasRepository.ValidateUser(marca);
+                return (false, marca.Mensaje);
             }
+
+
         }
         //Validaciones de entrada de datos
 
