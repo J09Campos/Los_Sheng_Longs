@@ -7,14 +7,12 @@
 
 <h1>Gestión de Motivos</h1>
 
-<!-- Botón para agregar nuevo motivo -->
 <p>
     <button class="btn btn-primary" data-toggle="modal" data-target="#addMotivoModal">
-        <i class="fas fa-plus-circle"></i> Nuevo Motivo
+        <i class=""></i> Nuevo
     </button>
 </p>
 
-<!-- Tabla de motivos -->
 <div class="table-responsive">
     <table class="table table-bordered table-hover" style="width:100%;">
         <thead style="background-color: #36404a; color: white;">
@@ -36,8 +34,8 @@
                                    value="@motivo.Nombre_Motivo"
                                    class="form-control me-2"
                                    required maxlength="40" />
-                            <button type="submit" class="btn btn-success btn-sm" title="Guardar cambios">
-                                <i class="fas fa-save"></i>
+                            <button type="submit" class="btn btn-primary btn-circle btn-sm" title="Guardar cambios">
+                                <i class="fas fa-edit"></i>
                             </button>
                         </form>
                     </td>
@@ -58,7 +56,6 @@
     </table>
 </div>
 
-<!-- Modal para agregar motivo -->
 <div class="modal fade" id="addMotivoModal" tabindex="-1" role="dialog" aria-labelledby="addMotivoLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content border-left-primary shadow">
@@ -91,7 +88,6 @@
     </div>
 </div>
 
-<!-- Modal de confirmación de eliminación -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteMotivoLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content border-left-danger shadow">
@@ -121,7 +117,6 @@
     </div>
 </div>
 
-<!-- Modal de mensajes del sistema -->
 <div class="modal fade" id="systemMessageModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -154,7 +149,7 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // Cargar datos en el modal de eliminación
+
         $('#deleteModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
@@ -164,7 +159,6 @@
             modal.find('#nombreMotivo').text(nombre);
         });
 
-        // Mostrar modal de mensaje si existe TempData
         $(document).ready(function () {
             var modalMessage = "@(TempData["CreateMessageMotivo"] ?? "")";
             if (modalMessage.length > 0) {

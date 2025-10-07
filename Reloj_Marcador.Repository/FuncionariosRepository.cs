@@ -414,7 +414,7 @@ namespace Reloj_Marcador.Repository
             }
             catch (Exception ex)
             {
-                return (false, $"Error al eliminar la asociación: {ex.Message}");
+                return (false, $"{ex.Message}");
             }
         }
 

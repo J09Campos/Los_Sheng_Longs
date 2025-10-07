@@ -25,9 +25,30 @@ namespace Reloj_Marcador.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public Task<IEnumerable<Area>> GetAllAsync()
+        public async Task<IEnumerable<Area>> GetAllAsync()
         {
-            return _areaRepository.GetAllAsync();
+            try
+            {
+                //Esto es solo para probar que los errores de sistema de MySQL se capturan correctamente y se registran en la bitácora.
+                //var conn = new MySql.Data.MySqlClient.MySqlConnection("Server=127.0.0.1;Database=Tito;Uid=usr;Pwd=123;");
+                //await conn.OpenAsync();
+
+                return await _areaRepository.GetAllAsync();
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                string usuario = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Sistema";
+                await _bitacoraService.RegistrarAsync(
+                    usuario,
+                    "Error de base de datos en GetAllAsync Area",
+                    new { Error = ex.Message, StackTrace = ex.StackTrace }
+                );
+                return new List<Area>();
+            }
+            catch (Exception)
+            {
+                return new List<Area>();
+            }
         }
 
         public Task<Area?> GetByIdAsync(string id_area)
@@ -37,7 +58,6 @@ namespace Reloj_Marcador.Services
 
         public async Task<(bool Resultado, string Mensaje)> InsertAsync(Area area)
         {
-            // Validaciones
             if (string.IsNullOrWhiteSpace(area.ID_Area))
                 return (false, "El identificador del área no debe ser nulo.");
 
@@ -108,7 +128,6 @@ namespace Reloj_Marcador.Services
 
             try
             {
-                // Obtener estado anterior
                 var areaAnterior = await _areaRepository.GetByIdAsync(area.ID_Area);
 
                 var resultado = await _areaRepository.CRUDAsync(area, 2);
@@ -141,7 +160,6 @@ namespace Reloj_Marcador.Services
         {
             try
             {
-                // Obtener antes de eliminar
                 var areaEliminada = await _areaRepository.GetByIdAsync(area.ID_Area);
 
                 var resultado = await _areaRepository.CRUDAsync(area, 3);

@@ -26,7 +26,7 @@ namespace Reloj_Marcador.Services
                 var options = new JsonSerializerOptions
                 {
                     Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                    WriteIndented = false // opcional: JSON en una sola línea
+                    WriteIndented = false 
                 };
 
                 string descripcionJson = descripcion is string str ? str: JsonSerializer.Serialize(descripcion, options);

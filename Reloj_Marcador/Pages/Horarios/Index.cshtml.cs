@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -27,213 +26,166 @@ namespace Reloj_Marcador.Pages.Horarios
             _areaService = areaService;
             _detalleService = detalleService;
             _logger = logger;
-
-            Horarios = new List<Horario>();
-            AreasDisponibles = new List<Area>();
-            Detalles = new List<DetalleHorario>();
         }
 
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public string FuncionarioSeleccionado { get; set; }
 
-        public IEnumerable<Horario> Horarios { get; set; }
-        public IEnumerable<Area> AreasDisponibles { get; set; }
-
-        [BindProperty]
-        public Horario NuevoHorario { get; set; } = new Horario();
-
-        [BindProperty]
-        public DetalleHorario NuevoDetalle { get; set; } = new DetalleHorario();
-
+        public IEnumerable<Horario> Horarios { get; set; } = new List<Horario>();
+        public IEnumerable<Area> AreasDisponibles { get; set; } = new List<Area>();
+        public IEnumerable<DetalleHorario> Detalles { get; set; } = new List<DetalleHorario>();
         public Horario HorarioSeleccionado { get; set; } = new Horario();
-        public IEnumerable<DetalleHorario> Detalles { get; set; }
 
-        public async Task OnGetAsync(int? idHorario = null)
+        [BindProperty] public Horario NuevoHorario { get; set; } = new Horario();
+        [BindProperty] public DetalleHorario NuevoDetalle { get; set; } = new DetalleHorario();
+
+        public async Task OnGetAsync(int? idHorario = null, string? funcionarioId = null)
         {
-            Horarios = await _horarioService.ListarHorariosPorFuncionario(FuncionarioSeleccionado) ?? new List<Horario>();
-
-            AreasDisponibles = await _areaService.GetAllAsync() ?? new List<Area>();
-
-            if (idHorario.HasValue && idHorario > 0)
+            try
             {
-                HorarioSeleccionado = await _horarioService.GetByIdAsync(idHorario.Value) ?? new Horario();
+                FuncionarioSeleccionado ??= funcionarioId;
 
-                if (HorarioSeleccionado.ID_Horario > 0)
+                if (string.IsNullOrWhiteSpace(FuncionarioSeleccionado))
                 {
-                    Detalles = await _detalleService.ListarDetallesPorHorario(idHorario.Value) ?? new List<DetalleHorario>();
+                    TempData["Error"] = "Debe seleccionar un funcionario v lido.";
+                    return;
                 }
-                else
+
+                Horarios = await _horarioService.ListarHorariosPorFuncionario(FuncionarioSeleccionado) ?? new List<Horario>();
+                AreasDisponibles = await _areaService.GetAllAsync() ?? new List<Area>();
+
+                if (idHorario.HasValue && idHorario > 0)
                 {
-                    
-                    HorarioSeleccionado = new Horario();
-                    Detalles = new List<DetalleHorario>();
+                    HorarioSeleccionado = await _horarioService.GetByIdAsync(idHorario.Value) ?? new Horario();
+                    if (HorarioSeleccionado.ID_Horario > 0)
+                        Detalles = await _detalleService.ListarDetallesPorHorario(idHorario.Value) ?? new List<DetalleHorario>();
                 }
             }
-            else
+            catch (Exception ex)
             {
-
-                HorarioSeleccionado = new Horario();
-                Detalles = new List<DetalleHorario>();
-
+                _logger.LogError(ex, "Error al cargar los horarios.");
+                TempData["Error"] = "Ocurri  un error al cargar los datos. Int ntelo nuevamente.";
             }
         }
 
         public async Task<IActionResult> OnPostCreateAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                await OnGetAsync();
-                return Page();
-            }
-
-            if (string.IsNullOrEmpty(NuevoHorario.ID_Area) || string.IsNullOrEmpty(NuevoHorario.Descripcion?.Trim()))
-            {
-                ModelState.AddModelError("", "Área y Descripción son requeridos y no pueden estar vacíos.");
-                await OnGetAsync();
-                return Page();
-            }
-
-            NuevoHorario.ID_Funcionario = FuncionarioSeleccionado;
-
             try
             {
-                var rowsAffected = await _horarioService.InsertAsync(NuevoHorario);
-                if (rowsAffected > 0)
+                if (string.IsNullOrWhiteSpace(FuncionarioSeleccionado))
                 {
-                    TempData["Success"] = "Horario guardado exitosamente.";
+                    TempData["Error"] = "Debe seleccionar un funcionario antes de crear un horario.";
                     return RedirectToPage();
                 }
-                else
+
+                if (string.IsNullOrWhiteSpace(NuevoHorario.Descripcion))
                 {
-                    ModelState.AddModelError("", "No se pudo guardar. Posible duplicado (ya existe para esta área) o error en datos.");
-                    await OnGetAsync();
-                    return Page();
+                    TempData["Error"] = "La descripci n del horario es obligatoria.";
+                    return RedirectToPage(new { FuncionarioSeleccionado });
                 }
+
+                NuevoHorario.ID_Funcionario = FuncionarioSeleccionado;
+                NuevoHorario.Fecha_Creacion = DateTime.Now;
+
+                var rows = await _horarioService.InsertAsync(NuevoHorario);
+                TempData["Success"] = rows > 0
+                    ? "Horario guardado exitosamente."
+                    : "No se pudo guardar el horario. Verifique los datos ingresados.";
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Error al guardar: {ex.Message}");
-                await OnGetAsync();
-                return Page();
+                _logger.LogError(ex, "Error al crear horario.");
+                TempData["Error"] = "Ocurri  un error al crear el horario. Intente nuevamente m s tarde.";
             }
+
+            return RedirectToPage(new { FuncionarioSeleccionado });
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
+            if (id <= 0)
+            {
+                TempData["Error"] = "ID de horario no v lido.";
+                return RedirectToPage(new { FuncionarioSeleccionado });
+            }
+
             try
             {
                 var rows = await _horarioService.DeleteAsync(id);
-                if (rows > 0)
-                {
-                    TempData["Success"] = "Horario eliminado.";
-                }
-                else
-                {
-                    TempData["Error"] = "No se eliminó (no encontrado).";
-                }
+                TempData["Success"] = rows > 0
+                    ? "Horario eliminado correctamente."
+                    : "No se elimin  el horario.";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = ex.Message;
+                _logger.LogError(ex, "Error al eliminar horario ID {Id}", id);
+
+                if (ex.Message.Contains("foreign key", StringComparison.OrdinalIgnoreCase))
+                    TempData["Error"] = "No se puede eliminar el horario porque tiene detalles asociados.";
+                else
+                    TempData["Error"] = "Ocurri  un error al eliminar el horario. Intente nuevamente.";
             }
-            return RedirectToPage();
+
+            return RedirectToPage(new { FuncionarioSeleccionado });
         }
 
         public async Task<IActionResult> OnPostAgregarDetalleAsync(int? idHorario)
         {
             if (!idHorario.HasValue || idHorario <= 0)
             {
-                ModelState.AddModelError("", "ID de Horario inválido. Cree un horario primero.");
-                await OnGetAsync();
-                return Page();
+                TempData["Error"] = "Debe seleccionar un horario v lido.";
+                return RedirectToPage(new { FuncionarioSeleccionado });
             }
-
-           
-            var keysToRemove = ModelState.Keys.Where(k =>
-                k.StartsWith("NuevoHorario.") ||
-                k == "NuevoHorario" ||
-                k == "ID_Area" ||
-                k == "ID_Funcionario" ||
-                k == "Descripcion"
-            ).ToList();
-            foreach (var key in keysToRemove)
-            {
-                ModelState.Remove(key);
-            }
-
-            if (!ModelState.IsValid)
-            {
-                await OnGetAsync(idHorario.Value);
-                return Page();
-            }
-
-            if (string.IsNullOrEmpty(NuevoDetalle.Dia?.Trim()))
-            {
-                ModelState.AddModelError("", "Día es requerido.");
-                await OnGetAsync(idHorario.Value);
-                return Page();
-            }
-
-            if (NuevoDetalle.Hora_Ingreso < 0 || NuevoDetalle.Hora_Ingreso > 23 ||
-                NuevoDetalle.Minuto_Ingreso < 0 || NuevoDetalle.Minuto_Ingreso > 59 ||
-                NuevoDetalle.Hora_Salida < 0 || NuevoDetalle.Hora_Salida > 23 ||
-                NuevoDetalle.Minuto_Salida < 0 || NuevoDetalle.Minuto_Salida > 59)
-            {
-                ModelState.AddModelError("", "Horas: 0-23, Minutos: 0-59.");
-                await OnGetAsync(idHorario.Value);
-                return Page();
-            }
-
-            NuevoDetalle.Id_Horario = idHorario.Value;
 
             try
             {
-                var rowsAffected = await _detalleService.AgregarDetalleHorario(NuevoDetalle);
-                if (rowsAffected > 0)
+                var horaInicio = new TimeSpan(NuevoDetalle.Hora_Ingreso, NuevoDetalle.Minuto_Ingreso, 0);
+                var horaFin = new TimeSpan(NuevoDetalle.Hora_Salida, NuevoDetalle.Minuto_Salida, 0);
+
+                if (horaFin <= horaInicio)
                 {
-                    TempData["Success"] = "Detalle agregado exitosamente.";
-                    return RedirectToPage(new { idHorario = idHorario.Value });
+                    TempData["Error"] = "La hora de salida debe ser mayor a la de ingreso.";
+                    return RedirectToPage(new { idHorario, FuncionarioSeleccionado });
                 }
-                else
-                {
-                    ModelState.AddModelError("", "No se pudo agregar. Verifique duplicados por día o horario válido.");
-                    await OnGetAsync(idHorario.Value);
-                    return Page();
-                }
+
+                NuevoDetalle.Id_Horario = idHorario.Value;
+
+                var rows = await _detalleService.AgregarDetalleHorario(NuevoDetalle);
+                TempData["Success"] = rows > 0
+                    ? "Detalle agregado correctamente."
+                    : "No se pudo agregar el detalle. Verifique los datos ingresados.";
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Error al agregar: {ex.Message}");
-                await OnGetAsync(idHorario.Value);
-                return Page();
+                _logger.LogError(ex, "Error al agregar detalle al horario {Id}", idHorario);
+                TempData["Error"] = "Ocurri  un error al agregar el detalle. Intente nuevamente m s tarde.";
             }
+
+            return RedirectToPage(new { idHorario, FuncionarioSeleccionado });
         }
 
-        public async Task<IActionResult> OnPostEliminarDetalleAsync(int id, int? idHorario)
+        public async Task<IActionResult> OnPostEliminarDetalleAsync(int id, int idHorario)
         {
-            if (id <= 0 || !idHorario.HasValue || idHorario <= 0)
+            if (id <= 0)
             {
-                TempData["Error"] = "IDs inválidos.";
-                return RedirectToPage();
+                TempData["Error"] = "ID de detalle no v lido.";
+                return RedirectToPage(new { idHorario, FuncionarioSeleccionado });
             }
 
             try
             {
                 var rows = await _detalleService.EliminarDetalleHorario(id);
-                if (rows > 0)
-                {
-                    TempData["Success"] = "Detalle eliminado.";
-                }
-                else
-                {
-                    TempData["Error"] = "No se eliminó.";
-                }
+                TempData["Success"] = rows > 0
+                    ? "Detalle eliminado correctamente."
+                    : "No se elimin  el detalle.";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = ex.Message;
+                _logger.LogError(ex, "Error al eliminar detalle con ID {Id}", id);
+                TempData["Error"] = "Ocurri  un error al eliminar el detalle. Intente nuevamente.";
             }
-            return RedirectToPage(new { idHorario = idHorario.Value });
+
+            return RedirectToPage(new { idHorario, FuncionarioSeleccionado });
         }
     }
 }

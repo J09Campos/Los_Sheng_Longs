@@ -33,7 +33,6 @@ namespace Reloj_Marcador.Pages.Areas
             }
             else
             {
-                //Trae los datos del área seleccionada
                 Area = await _areaService.GetByIdAsync(id);
 
                 if (Area == null)
@@ -41,7 +40,7 @@ namespace Reloj_Marcador.Pages.Areas
                     return NotFound();
                 }
             }
-            //Se encarga de llenar el Combo de Jefes                                                                       --Esto se encarga de poner el jefe actual del área
+
             ListaJefes = jefes.Select(j => new SelectListItem { Value = j.ID_Jefe, Text = j.Nombre_Jefe, Selected = (Area != null && Area.Jefe == j.ID_Jefe) }).ToList();
             return Page();
         }

@@ -57,12 +57,10 @@ namespace Reloj_Marcador.Services
 
 
         }
-        //Validaciones de entrada de datos
 
         private bool ValidarUsuario(Entities.Marcas marca)
         {
 
-            // Validar identificación
             if (string.IsNullOrWhiteSpace(marca.Identificacion))
             {
                 marca.Mensaje = "Usuario y/o contraseña incorrectos.";
@@ -74,7 +72,6 @@ namespace Reloj_Marcador.Services
                 return false;
             }
 
-            // Validar contraseña
             if (string.IsNullOrWhiteSpace(marca.Contrasena))
             {
                 marca.Mensaje = "Usuario y/o contraseña incorrectos.";
@@ -86,13 +83,12 @@ namespace Reloj_Marcador.Services
                 return false;
             }
 
-            // Validar tipo de Area
             if (string.IsNullOrWhiteSpace(marca.Id_Area))
             {
                 marca.Mensaje = "El área es obligatoria.";
                 return false;
             }
-            // Validar descripción
+
             if (string.IsNullOrWhiteSpace(marca.Descripcion))
             {
                 marca.Descripcion = "";
@@ -106,7 +102,6 @@ namespace Reloj_Marcador.Services
                 }
             }
 
-            // Validar tipo de marca
             if (string.IsNullOrWhiteSpace(marca.Tipo_Marca))
             {
                 marca.Mensaje = "El tipo de marca es obligatorio.";
@@ -119,7 +114,6 @@ namespace Reloj_Marcador.Services
                 return false;
             }
 
-            // Si todo es correcto
             return true;
         }
     }

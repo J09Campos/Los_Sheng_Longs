@@ -18,7 +18,6 @@ namespace Reloj_Marcador.Pages.Login
             _loginService = loginService;
         }
 
-        // Inputs del Usuario de los Txt
 
         [BindProperty]
         public string Usuario { get; set; } = string.Empty;

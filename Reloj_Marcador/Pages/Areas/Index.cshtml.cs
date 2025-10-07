@@ -54,7 +54,7 @@ namespace Reloj_Marcador.Areas
 
             var (resultado, mensaje) = await _areaService.DeleteAsync(area);
 
-            TempData["CreateTitle"] = "Operación Exitosa";
+            TempData["CreateTitle"] = "Operación Fallida";
             TempData["CreateMessage"] = mensaje;
 
             return RedirectToPage(new { pageNumber = CurrentPage });

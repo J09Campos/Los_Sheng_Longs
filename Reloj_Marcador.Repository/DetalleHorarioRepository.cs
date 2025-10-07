@@ -17,7 +17,6 @@ namespace Reloj_Marcador.Repository
             _dbConnectionFactory = dbConnectionFactory;
         }
 
-        // Listar detalles de un horario
         public async Task<IEnumerable<DetalleHorario>> GetByHorarioAsync(int idHorario)
         {
             using var connection = _dbConnectionFactory.CreateConnection();
@@ -27,7 +26,6 @@ namespace Reloj_Marcador.Repository
             return await connection.QueryAsync<DetalleHorario>(sql, new { IdHorario = idHorario });
         }
 
-        // Obtener un detalle por ID
         public async Task<DetalleHorario?> GetByIdAsync(int id)
         {
             using var connection = _dbConnectionFactory.CreateConnection();
@@ -37,7 +35,6 @@ namespace Reloj_Marcador.Repository
             return await connection.QuerySingleOrDefaultAsync<DetalleHorario>(sql, new { Id = id });
         }
 
-        // Insertar un detalle de horario
         public async Task<int> InsertAsync(DetalleHorario detalle)
         {
             using var connection = _dbConnectionFactory.CreateConnection();
@@ -46,7 +43,6 @@ namespace Reloj_Marcador.Repository
             return await connection.ExecuteAsync(sql, detalle);
         }
 
-        // Actualizar un detalle de horario
         public async Task<int> UpdateAsync(DetalleHorario detalle)
         {
             using var connection = _dbConnectionFactory.CreateConnection();
@@ -60,7 +56,6 @@ namespace Reloj_Marcador.Repository
             return await connection.ExecuteAsync(sql, detalle);
         }
 
-        // Eliminar un detalle de horario
         public async Task<int> DeleteAsync(int id)
         {
             using var connection = _dbConnectionFactory.CreateConnection();

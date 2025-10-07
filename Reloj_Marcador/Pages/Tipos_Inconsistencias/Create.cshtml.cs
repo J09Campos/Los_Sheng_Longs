@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Reloj_Marcador.Entities;
@@ -5,6 +6,7 @@ using Reloj_Marcador.Services.Abstract;
 
 namespace Reloj_Marcador.Pages.Tipos_Inconsistencias
 {
+    [Authorize]
     public class CreateModel : PageModel
     {
         private readonly IInconsistenciasService _inconsistenciasService;

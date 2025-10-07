@@ -72,6 +72,8 @@ namespace Reloj_Marcador.Pages.Funcionarios
             };
 
             var (resultado, mensaje) = await _funcionariosService.EliminarAsociacionAsync(asociacion);
+            TempData["CreateTitle"] = "Operación Fallida";
+            TempData["CreateMessage"] = mensaje;
 
             return RedirectToPage(new { identificacion = Identificacion, pageNumber = CurrentPage });
         }

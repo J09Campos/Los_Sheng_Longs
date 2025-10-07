@@ -70,7 +70,6 @@ namespace Reloj_Marcador.Services
             }
            
         }
-        //Validaciones de entrada de datos
 
         private bool ValidarInconsistencias(Entities.Inconsistencias inconsistencia, string accion)
         {

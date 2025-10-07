@@ -1,62 +1,63 @@
-﻿@page 
+﻿@page
 @model Reloj_Marcador.Pages.Horarios.IndexModel
 @{
     ViewData["Title"] = "Gestión de Horarios";
+    Layout = "_Layout";
 }
 
-<div class="container">
-    <h2 class="mt-4">Gestión de Horarios del Funcionario: @Model.FuncionarioSeleccionado</h2>
+<h1>Administración de Horarios</h1>
 
-    <!-- Mostrar mensajes de éxito/error -->
+<div class="mb-3 d-flex justify-content-start align-items-center">
+    <a asp-page="/Funcionarios/Index" class="btn btn-secondary mr-2">
+        <i class=""></i> Volver
+    </a>
+    <button class="btn btn-primary" disabled>
+        <i class="fas fa-clock mr-1"></i> Horarios del funcionario: @Model.FuncionarioSeleccionado
+    </button>
+</div>
+
+<div class="container-fluid">
+
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Success"]
-            <button type="button" class="btn btn-primary" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="fas fa-check-circle mr-2"></i> @TempData["Success"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
     }
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["Error"]
-            <button type="button" class="btn btn-primary" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-    @if (!ModelState.IsValid)
-    {
-        <div class="alert alert-warning">
-            <strong>Errores en el formulario:</strong>
-            <ul class="mb-0">
-                @foreach (var kvp in ModelState.Where(kvp => kvp.Value.Errors.Any()))
-                {
-                    foreach (var error in kvp.Value.Errors)
-                    {
-                        <li><strong>@kvp.Key:</strong> @error.ErrorMessage</li>
-                    }
-                }
-            </ul>
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="fas fa-exclamation-circle mr-2"></i> @TempData["Error"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
     }
 
     <hr />
 
+    <h3 class="text-primary mt-4 mb-3"><i class="fas fa-calendar-alt mr-2"></i> Horarios Asignados</h3>
 
-    <h3>Horarios Asignados</h3>
     @if (!Model.Horarios.Any())
     {
-        <div class="alert alert-info">No hay horarios asignados. Cree uno nuevo abajo.</div>
+        <div class="alert alert-info shadow-sm">
+            <i class="fas fa-info-circle mr-2"></i> No hay horarios asignados. Cree uno nuevo abajo.
+        </div>
     }
     else
     {
         <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-dark">
+            <table class="table table-bordered table-hover">
+                <thead style="background-color: #36404a; color: white;">
                     <tr>
                         <th>ID</th>
                         <th>Área</th>
                         <th>Descripción</th>
                         <th>Fecha Creación</th>
-                        <th>Acciones</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,15 +67,27 @@
                             <td>@horario.ID_Horario</td>
                             <td>@(Model.AreasDisponibles.FirstOrDefault(a => a.ID_Area == horario.ID_Area)?.Nombre_Area ?? horario.ID_Area)</td>
                             <td>@horario.Descripcion</td>
-                            <td>@(horario.Fecha_Creacion.ToString("dd/MM/yyyy HH:mm"))</td>
-                            <td>
+                            <td>@horario.Fecha_Creacion.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="text-center">
+                                <a href="@Url.Page("./Index", new { idHorario = horario.ID_Horario, FuncionarioSeleccionado = Model.FuncionarioSeleccionado })"
+                                   class="btn btn-primary btn-sm" title="Ver Detalles">
+                                    <i class="fas fa-eye"></i>
+                                </a>
 
-                                <a href="@Url.Page("./Index", new { idHorario = horario.ID_Horario })" class="btn btn-primary">Ver Detalles</a>
-
-                         
-                                <form method="post" asp-page-handler="Delete" asp-route-id="@horario.ID_Horario" style="display: inline-block;" onsubmit="return confirm('¿Eliminar este horario y sus detalles?');">
-                                    <input type="hidden" name="FuncionarioSeleccionado" value="@Model.FuncionarioSeleccionado" />
-                                    <button type="submit" class="btn btn-primary">Eliminar</button>
+                                <form method="post"
+                                      asp-page="/Horarios/Index"
+                                      asp-page-handler="Delete"
+                                      asp-route-id="@horario.ID_Horario"
+                                      asp-route-FuncionarioSeleccionado="@Model.FuncionarioSeleccionado"
+                                      class="d-inline delete-form">
+                                    <button type="button"
+                                            class="btn btn-danger btn-sm btn-open-modal"
+                                            data-toggle="modal"
+                                            data-target="#confirmModal"
+                                            data-message="¿Eliminar el horario y sus detalles?"
+                                            title="Eliminar">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </form>
                             </td>
                         </tr>
@@ -86,108 +99,108 @@
 
     <hr />
 
+    <h3 class="text-primary mt-4 mb-3"><i class="fas fa-plus-circle mr-2"></i> Agregar Nuevo Horario</h3>
 
-    <h3>Agregar Nuevo Horario</h3>
-    <form method="post" asp-page-handler="Create">
-        <input type="hidden" name="FuncionarioSeleccionado" value="@Model.FuncionarioSeleccionado" />
+    <form method="post" asp-page-handler="Create" asp-route-FuncionarioSeleccionado="@Model.FuncionarioSeleccionado">
         <input type="hidden" asp-for="NuevoHorario.ID_Funcionario" value="@Model.FuncionarioSeleccionado" />
         <div class="row g-3 mb-3">
             <div class="col-md-4">
-                <label asp-for="NuevoHorario.ID_Area" class="form-label">Área *</label>
-                <select asp-for="NuevoHorario.ID_Area" class="form-select" required>
+                <label asp-for="NuevoHorario.ID_Area" class="form-label font-weight-bold">Área *</label>
+                <select asp-for="NuevoHorario.ID_Area" class="form-control" required>
                     <option value="">Seleccione un área</option>
-                    @if (Model.AreasDisponibles != null)
+                    @foreach (var area in Model.AreasDisponibles ?? Enumerable.Empty<Reloj_Marcador.Entities.Area>())
                     {
-                        @foreach (var area in Model.AreasDisponibles)
-                        {
-                            <option value="@area.ID_Area">@area.Nombre_Area</option>
-                        }
+                        <option value="@area.ID_Area">@area.Nombre_Area</option>
                     }
                 </select>
-                <div asp-validation-for="NuevoHorario.ID_Area" class="form-text"></div>
             </div>
             <div class="col-md-6">
-                <label asp-for="NuevoHorario.Descripcion" class="form-label">Descripción *</label>
+                <label asp-for="NuevoHorario.Descripcion" class="form-label font-weight-bold">Descripción *</label>
                 <input asp-for="NuevoHorario.Descripcion" type="text" class="form-control" required maxlength="255" placeholder="Ej. Horario diurno semanal" />
-                <div asp-validation-for="NuevoHorario.Descripcion" class="form-text"></div>
             </div>
             <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100">Guardar Horario</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class=""></i> Guardar
+                </button>
             </div>
         </div>
     </form>
 
-    <hr />
-
-  
     @if (Model.HorarioSeleccionado != null && Model.HorarioSeleccionado.ID_Horario > 0)
     {
-        <h3>Detalles del Horario Seleccionado: ID @Model.HorarioSeleccionado.ID_Horario - @Model.HorarioSeleccionado.Descripcion</h3>
+        <hr />
+        <h3 class="text-primary mt-4 mb-3">
+            <i class="fas fa-list mr-2"></i> Detalles del Horario Seleccionado:
+            <span class="text-dark">ID @Model.HorarioSeleccionado.ID_Horario - @Model.HorarioSeleccionado.Descripcion</span>
+        </h3>
 
-     
-        <h4>Agregar Detalle al Horario</h4>
-        <form method="post" asp-page-handler="AgregarDetalle" asp-route-idHorario="@Model.HorarioSeleccionado.ID_Horario">
- 
-            <input type="hidden" name="FuncionarioSeleccionado" value="@Model.FuncionarioSeleccionado" />
-
-    
-            <input type="hidden" asp-for="NuevoHorario.ID_Funcionario" value="@Model.HorarioSeleccionado.ID_Funcionario" />
-            <input type="hidden" asp-for="NuevoHorario.ID_Area" value="@Model.HorarioSeleccionado.ID_Area" />
-            <input type="hidden" asp-for="NuevoHorario.Descripcion" value="@Model.HorarioSeleccionado.Descripcion" />
-
-            <div class="row g-3 mb-3">
-                <div class="col-md-2">
-                    <label class="form-label">Día *</label>
-                    <select name="Dia" class="form-select" required>
-                        <option value="">Seleccione día</option>
-                        <option value="Lunes">Lunes</option>
-                        <option value="Martes">Martes</option>
-                        <option value="Miércoles">Miércoles</option>
-                        <option value="Jueves">Jueves</option>
-                        <option value="Viernes">Viernes</option>
-                        <option value="Sábado">Sábado</option>
-                        <option value="Domingo">Domingo</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Hora Ingreso *</label>
-                    <input type="number" name="Hora_Ingreso" class="form-control" min="0" max="23" required placeholder="Ej. 9" />
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Minuto Ingreso *</label>
-                    <input type="number" name="Minuto_Ingreso" class="form-control" min="0" max="59" required placeholder="Ej. 0" />
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Hora Salida *</label>
-                    <input type="number" name="Hora_Salida" class="form-control" min="0" max="23" required placeholder="Ej. 18" />
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Minuto Salida *</label>
-                    <input type="number" name="Minuto_Salida" class="form-control" min="0" max="59" required placeholder="Ej. 0" />
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary">Agregar Detalle</button>
-                </div>
+        <div class="card shadow-sm border-left-primary mb-4">
+            <div class="card-body">
+                <h5 class="card-title text-primary"><i class="fas fa-plus mr-2"></i> Agregar Detalle</h5>
+                <form method="post"
+                      asp-page="/Horarios/Index"
+                      asp-page-handler="AgregarDetalle"
+                      asp-route-idHorario="@Model.HorarioSeleccionado.ID_Horario"
+                      asp-route-FuncionarioSeleccionado="@Model.FuncionarioSeleccionado">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-2">
+                            <label class="form-label font-weight-bold">Día *</label>
+                            <select name="Dia" class="form-control" required>
+                                <option value="">Seleccione día</option>
+                                <option>Lunes</option>
+                                <option>Martes</option>
+                                <option>Miércoles</option>
+                                <option>Jueves</option>
+                                <option>Viernes</option>
+                                <option>Sábado</option>
+                                <option>Domingo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label font-weight-bold">Hora Ingreso *</label>
+                            <input type="number" name="Hora_Ingreso" class="form-control" min="0" max="23" required />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label font-weight-bold">Minuto Ingreso *</label>
+                            <input type="number" name="Minuto_Ingreso" class="form-control" min="0" max="59" required />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label font-weight-bold">Hora Salida *</label>
+                            <input type="number" name="Hora_Salida" class="form-control" min="0" max="23" required />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label font-weight-bold">Minuto Salida *</label>
+                            <input type="number" name="Minuto_Salida" class="form-control" min="0" max="59" required />
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class=""></i> Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
 
-        <!-- Tabla de Detalles Actuales -->
-        <h4>Detalles Actuales</h4>
+        <h4 class="text-primary mb-3"><i class="fas fa-table mr-2"></i> Detalles Actuales</h4>
+
         @if (!Model.Detalles.Any())
         {
-            <div class="alert alert-info">No hay detalles para este horario. Agregue uno arriba.</div>
+            <div class="alert alert-info shadow-sm">
+                <i class="fas fa-info-circle mr-2"></i> No hay detalles para este horario.
+            </div>
         }
         else
         {
             <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead class="table-light">
+                <table class="table table-bordered table-hover">
+                    <thead style="background-color: #36404a; color: white;">
                         <tr>
                             <th>ID Detalle</th>
                             <th>Día</th>
                             <th>Hora Ingreso</th>
                             <th>Hora Salida</th>
-                            <th>Acciones</th>
+                            <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -198,10 +211,22 @@
                                 <td>@detalle.Dia</td>
                                 <td>@($"{detalle.Hora_Ingreso:D2}:{detalle.Minuto_Ingreso:D2}")</td>
                                 <td>@($"{detalle.Hora_Salida:D2}:{detalle.Minuto_Salida:D2}")</td>
-                                <td>
-                                    <form method="post" asp-page-handler="EliminarDetalle" asp-route-id="@detalle.Id_Detalle" asp-route-idHorario="@Model.HorarioSeleccionado.ID_Horario" style="display: inline-block;" onsubmit="return confirm('¿Eliminar este detalle?');">
-                                        <input type="hidden" name="FuncionarioSeleccionado" value="@Model.FuncionarioSeleccionado" />
-                                        <button type="submit" class="btn btn-primary">Eliminar</button>
+                                <td class="text-center">
+                                    <form method="post"
+                                          asp-page="/Horarios/Index"
+                                          asp-page-handler="EliminarDetalle"
+                                          asp-route-id="@detalle.Id_Detalle"
+                                          asp-route-idHorario="@Model.HorarioSeleccionado.ID_Horario"
+                                          asp-route-FuncionarioSeleccionado="@Model.FuncionarioSeleccionado"
+                                          class="d-inline delete-form">
+                                        <button type="button"
+                                                class="btn btn-danger btn-sm btn-open-modal"
+                                                data-toggle="modal"
+                                                data-target="#confirmModal"
+                                                data-message="¿Eliminar este detalle?"
+                                                title="Eliminar">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
                                     </form>
                                 </td>
                             </tr>
@@ -211,31 +236,58 @@
             </div>
         }
 
-  
         <div class="mt-3">
-            <a href="@Url.Page("./Index")" class="btn btn-secondary">Volver a Lista de Horarios</a>
+            <a href="@Url.Page("./Index", new { FuncionarioSeleccionado = Model.FuncionarioSeleccionado })"
+               class="btn btn-secondary">
+                <i class=""></i> Volver
+            </a>
         </div>
     }
-    else
-    {
-       
-        @if (Model.Horarios.Any())
-        {
-            <div class="alert alert-info">
-                <h4>Seleccione un Horario</h4>
-                <p>Haga clic en "Ver Detalles" en la tabla de arriba para ver y agregar detalles a un horario específico.</p>
+</div>
+
+<!-- Modal confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-left-primary shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title font-weight-bold" id="confirmModalLabel">
+                    <i class="fas fa-exclamation-triangle mr-2"></i> Confirmar acción
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-        }
-        else
-        {
-            <div class="alert alert-warning">
-                <h4>No hay horarios disponibles</h4>
-                <p>Cree un horario primero para ver y agregar detalles.</p>
+            <div class="modal-body text-gray-800">
+                <p id="confirmMessage">¿Desea continuar?</p>
             </div>
-        }
-    }
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times mr-1"></i> Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" id="btnConfirmDelete">
+                    <i class="fas fa-trash-alt mr-1"></i> Sí, eliminar
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        var formToSubmit = null;
+
+        $(document).on('click', '.btn-open-modal', function () {
+            formToSubmit = this.closest('form');
+            var message = $(this).data('message') || '¿Desea continuar?';
+            $('#confirmMessage').text(message);
+        });
+
+        $('#btnConfirmDelete').on('click', function () {
+            if (formToSubmit) {
+                formToSubmit.submit();
+                formToSubmit = null;
+            }
+        });
+    </script>
 }

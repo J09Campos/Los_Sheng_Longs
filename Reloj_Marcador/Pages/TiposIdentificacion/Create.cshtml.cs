@@ -27,6 +27,7 @@ namespace Reloj_Marcador.Pages.TiposIdentificacion
             try
             {
                 await _service.CrearAsync(Tipo);
+                TempData["CreateTitle0"] = "Operación Exitosa.";
                 TempData["CreateMessage0"] = "Tipo de identificación creado con éxito.";
                 return RedirectToPage("Index");
             }

@@ -50,7 +50,6 @@ namespace Reloj_Marcador.Repository
         private static readonly string Key = "0123456789abcdef";
         private static readonly string IV = "abcdef0123456789";
 
-        // Método  para Encriptar
 
         public static string Encrypt(string plainText)
         {
@@ -76,8 +75,6 @@ namespace Reloj_Marcador.Repository
                 return base64.Replace('+', '-').Replace('/', '_').Replace("=", "");
             }
         }
-
-        // Método para Desencriptar
 
         public static string Decrypt(string cipherText)
         {
