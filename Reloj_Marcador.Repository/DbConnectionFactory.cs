@@ -1,0 +1,21 @@
+﻿using System.Data;
+using Microsoft.Extensions.Configuration;
+using MySql.Data.MySqlClient;
+
+namespace Reloj_Marcador.Repository
+{
+    public class DbConnectionFactory : IDbConnectionFactory
+    {
+        private readonly IConfiguration _configuration;
+
+        public DbConnectionFactory(IConfiguration configuracion)
+        {
+            _configuration = configuracion;
+        }
+
+        public IDbConnection CreateConnection()
+        {
+            return new MySqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        }
+    }
+}
