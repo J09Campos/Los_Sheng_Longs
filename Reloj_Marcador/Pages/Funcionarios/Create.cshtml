@@ -1,0 +1,113 @@
+﻿@page
+@model Reloj_Marcador.Pages.Funcionarios.CreateModel
+@{
+    ViewData["Title"] = "Crear Funcionario";
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" rel="stylesheet" />
+
+<h1>Crear Funcionario</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div class="form-group">
+                <label>Tipo de Identificación</label>
+                <select asp-for="Funcionario.TipoIdentificacion" class="form-control"
+                        asp-items="@(new SelectList(Model.TiposIdentificacion, "ID_TipoIdentificacion", "Nombre_TipoIdentificacion"))">
+                    <option value="">Seleccione...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Identificación</label>
+                <input asp-for="Funcionario.Identificacion" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Nombre</label>
+                <input asp-for="Funcionario.Nombre" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Apellido</label>
+                <input asp-for="Funcionario.Apellido" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Correo</label>
+                <input asp-for="Funcionario.Correo" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input asp-for="Funcionario.Contrasena" type="password" class="form-control" readonly />
+            </div>
+
+            <div class="form-group">
+                <label>Rol</label>
+                <select asp-for="Funcionario.ID_Rol" class="form-control"
+                        asp-items="@(new SelectList(Model.Roles, "ID_Rol", "Nombre_Rol"))">
+                    <option value="">Seleccione...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Estado</label>
+                <select asp-for="Funcionario.Estado" class="form-control"
+                        asp-items="@(new SelectList(Model.Estados, "Valor", "Valor"))">
+                    <option value="">Seleccione...</option>
+                </select>
+            </div>
+
+            <div class="form-group mt-3">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a asp-page="Index" class="btn btn-secondary">Volver</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="systemMessageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">@TempData.Peek("CreateTitle3")</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @TempData.Peek("CreateMessage3")
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger mt-2">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@error.ErrorMessage</div>
+        }
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var modalMessage = "@(TempData["CreateMessage3"] ?? "")";
+            if (modalMessage.length > 0) {
+        $("#systemMessageModal").modal("show");
+            }
+        });
+    </script>
+}
+
+
+

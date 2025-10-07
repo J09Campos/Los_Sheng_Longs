@@ -1,0 +1,21 @@
+﻿.logo-icon {
+    width: 8rem; 
+    height: 8rem; 
+    object-fit: contain; 
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    filter: brightness(0) invert(1); 
+}
+
+body {
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    min-height: 100vh; 
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+}
+
+.card {
+    width: 100%;
+    max-width: 900px; 
+}

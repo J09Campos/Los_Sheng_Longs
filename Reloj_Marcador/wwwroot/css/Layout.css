@@ -1,0 +1,23 @@
+﻿/* Textos Acomodados (Se acomodan Abajo con Salto de Línea) */
+
+.sidebar .nav-item .nav-link span,
+.sidebar .sidebar-heading,
+.collapse-inner .collapse-item {
+    white-space: normal !important;
+    word-break: break-word;
+    line-height: 1.3;
+}
+
+
+/* Bug de Espacio en Blanco */
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.sidebar-logo {
+    width: 90px; 
+    height: 90px; 
+    
+}
