@@ -33,13 +33,18 @@ namespace Reloj_Marcador.Services
         {
             if (ValidarUsuario(marca))
             {
-                
-                marca.IP_Registro = ObtenerIpCliente(_httpContextAccessor);
+                if (string.IsNullOrEmpty(marca.IP_Registro) || marca.IP_Registro == "::1")
+                {
+                    marca.IP_Registro = ObtenerIpCliente(_httpContextAccessor);
+                }
 
-                
-                var (lat, lon) = await ObtenerGeoDesdeIpAsync(marca.IP_Registro);
-                marca.Latitud = lat;
-                marca.Longitud = lon;
+                if (marca.Latitud == null || marca.Longitud == null)
+                {
+                    var (lat, lon) = await ObtenerGeoDesdeIpAsync(marca.IP_Registro);
+                    marca.Latitud = lat;
+                    marca.Longitud = lon;
+                }
+
 
                 var resultado = await _marcasRepository.ValidateUser(marca);
 
@@ -130,7 +135,7 @@ namespace Reloj_Marcador.Services
         {
             var marcas = await _marcasRepository.GetMarcasReporteAsync(inicio, fin, usuario);
 
-           
+
             string admin = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Administrador";
             var datosBitacora = new
             {

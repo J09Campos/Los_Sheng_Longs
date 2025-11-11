@@ -54,7 +54,7 @@
 }
 else
 {
-    <div class="table-responsive mb-5">
+    <div class="table-responsive">
         <table class="table table-bordered table-hover shadow-sm">
             <thead style="background-color: #36404a; color: white;">
                 <tr>
@@ -84,13 +84,13 @@ else
                 }
             </tbody>
         </table>
+
+        <h3 class="text-primary mb-3">
+            <i class="fas fa-map-marker-alt mr-2"></i> Ubicación de Marcas
+        </h3>
+
+        <div id="map" style="height: 500px; border-radius: 10px; border: 2px solid #ccc;"></div>
     </div>
-
-    <h3 class="text-primary mb-3">
-        <i class="fas fa-map-marker-alt mr-2"></i> Ubicación de Marcas
-    </h3>
-
-    <div id="map" style="height: 500px; border-radius: 10px; border: 2px solid #ccc;"></div>
 }
 
 @section Scripts {
@@ -98,60 +98,52 @@ else
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-        
-        var map = L.map('map').setView([9.8644, -83.9194], 13);
+        document.addEventListener("DOMContentLoaded", function () {
+            const marcas = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Marcas));
 
-       
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+            console.log("Marcas cargadas:", marcas);
 
-       
-        var marcas = [
-            @foreach (var marca in Model.Marcas)
-            {
-                    <text>{
-                        lat: @marca.Latitud,
-                        lng: @marca.Longitud,
-                        usuario: "@marca.Identificacion",
-                        area: "@marca.Id_Area",
-                        tipo: "@marca.Tipo_Marca",
-                        fecha: "@marca.Fecha?.ToString("yyyy-MM-dd")",
-                        hora: "@marca.Hora_Servidor?.ToString(@"hh\:mm")",
-                        ip: "@marca.IP_Registro"
-                    },</text>
-            }
-        ];
+            // Inicializar mapa centrado en Cartago
+            const map = L.map('map').setView([9.8639, -83.9189], 13);
 
-     
-        marcas.forEach(m => {
-            if (m.lat && m.lng) {
-               
-                L.circle([m.lat, m.lng], {
-                    color: 'blue',
-                    fillColor: '#3f6cf4',
-                    fillOpacity: 0.25,
-                    radius: 100
-                }).addTo(map);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
 
-              
-                L.marker([m.lat, m.lng])
-                    .addTo(map)
-                    .bindPopup(`
-                        <b>Usuario:</b> ${m.usuario}<br>
-                        <b>Área:</b> ${m.area}<br>
-                        <b>Tipo:</b> ${m.tipo}<br>
-                        <b>Fecha:</b> ${m.fecha}<br>
-                        <b>Hora:</b> ${m.hora}<br>
-                        <b>IP:</b> ${m.ip}
-                    `);
+            let added = false;
+
+            // Dibujar círculos por cada marca
+            marcas.forEach(m => {
+                const lat = parseFloat(m.Latitud);
+                const lon = parseFloat(m.Longitud);
+
+                if (!isNaN(lat) && !isNaN(lon)) {
+                    L.circle([lat, lon], {
+                        color: 'blue',
+                        fillColor: '#3b82f6',
+                        fillOpacity: 0.4,
+                        radius: 100
+                    }).addTo(map)
+                      .bindPopup(`
+                        <b>Funcionario:</b> ${m.Identificacion}<br/>
+                        <b>Área:</b> ${m.Id_Area}<br/>
+                        <b>Tipo:</b> ${m.Tipo_Marca}<br/>
+                        <b>Fecha:</b> ${m.Fecha}<br/>
+                        <b>IP:</b> ${m.IP_Registro}
+                      `);
+                    added = true;
+                }
+            });
+
+            if (added) {
+                const valid = marcas
+                    .filter(m => m.Latitud && m.Longitud)
+                    .map(m => [parseFloat(m.Latitud), parseFloat(m.Longitud)]);
+                map.fitBounds(valid);
+            } else {
+                console.warn("No se encontraron coordenadas válidas para mostrar en el mapa.");
             }
         });
-
-      
-        if (marcas.length > 0) {
-            var bounds = L.latLngBounds(marcas.map(m => [m.lat, m.lng]));
-            map.fitBounds(bounds);
-        }
     </script>
 }

@@ -23,6 +23,7 @@ namespace Reloj_Marcador.Pages.Marca_Entrada_Salida
         [BindProperty]
         public MarcaEntity Marca { get; set; }
 
+
         public SelectList AreasLista { get; set; }
 
         public async Task<JsonResult> OnGetObtenerIdAsync(string identificacion)
