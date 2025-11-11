@@ -11,6 +11,8 @@ namespace Reloj_Marcador.Services.Abstract
     {
         Task<IEnumerable<(string Id_Area, string Nombre_Area)>> GetAllAreaByID(string id);
         Task<(bool Resultado, string Mensaje)> ValidateUser(Marcas marca);
+        Task<IEnumerable<MarcasReporte>> ListarMarcasReporteAsync(DateTime? inicio, DateTime? fin, string? usuario);
+
 
     }
 }

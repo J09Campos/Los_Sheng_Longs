@@ -14,6 +14,7 @@ namespace Reloj_Marcador.Services
 
         private readonly LoginRepository _loginRepository;
 
+
         public LoginService(LoginRepository loginRepository)
         {
             _loginRepository = loginRepository;

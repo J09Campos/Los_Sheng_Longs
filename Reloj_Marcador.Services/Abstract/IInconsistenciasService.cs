@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Reloj_Marcador.Entities;
 
 namespace Reloj_Marcador.Services.Abstract
 {
     public interface IInconsistenciasService
     {
+        Task<IEnumerable<Inconsistencias>> GetAllAsync();
 
-        Task<IEnumerable<Entities.Inconsistencias>> GetAllAsync();
-        Task<Entities.Inconsistencias?> GetByIdAsync(string id);
-        Task<(bool Resultado, string Mensaje)> CRUDAsync(Entities.Inconsistencias inconsistencia, string accion);
+        Task<Inconsistencias?> GetByIdAsync(int id);
+
+        Task<(bool Resultado, string Mensaje)> CRUDAsync(Inconsistencias inconsistencia, string accion);
+
+        Task<IEnumerable<Inconsistencias>> ListarInconsistenciasAsync(
+            DateTime? inicio,
+            DateTime? fin,
+            string? area,
+            string? funcionario
+        );
     }
 }

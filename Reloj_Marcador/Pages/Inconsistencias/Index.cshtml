@@ -1,0 +1,91 @@
+﻿@page
+@model Reloj_Marcador.Pages.Inconsistencias.IndexModel
+@{
+    ViewData["Title"] = "Consulta de Inconsistencias";
+    Layout = "_Layout";
+}
+
+<h1 class="text-primary mb-4">
+    <i class="fas fa-exclamation-triangle mr-2"></i> Consulta de Inconsistencias
+</h1>
+
+<div class="container-fluid">
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="fas fa-exclamation-circle mr-2"></i> @TempData["Error"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    <form method="get" class="mb-4">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label font-weight-bold">Fecha inicio</label>
+                <input type="date" name="Inicio" value="@Model.Inicio?.ToString("yyyy-MM-dd")" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label font-weight-bold">Fecha fin</label>
+                <input type="date" name="Fin" value="@Model.Fin?.ToString("yyyy-MM-dd")" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label font-weight-bold">Funcionario</label>
+                <input type="text" name="Funcionario" value="@Model.Funcionario" class="form-control" />
+            </div>
+        </div>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search mr-2"></i> Buscar
+            </button>
+        </div>
+    </form>
+
+    <hr />
+
+    <h3 class="text-primary mb-3">
+        <i class="fas fa-list mr-2"></i> Resultados
+    </h3>
+
+    @if (Model.Inconsistencias == null || !Model.Inconsistencias.Any())
+    {
+        <div class="alert alert-info shadow-sm">
+            <i class="fas fa-info-circle mr-2"></i>
+            No se encontraron inconsistencias con los filtros seleccionados.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover shadow-sm">
+                <thead style="background-color:#36404a;color:white;">
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Detalle</th>
+                        <th>Funcionario</th>
+                        <th>Área</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var inc in Model.Inconsistencias)
+                    {
+                        <tr>
+                            <td>@inc.ID_Inconsistencia</td>
+                            <td>@inc.Fecha.ToString("yyyy-MM-dd")</td>
+                            <td>@inc.Tipo_Inconsistencia</td>
+                            <td>@inc.Detalle</td>
+                            <td>@inc.Identificacion</td>
+                            <td>@inc.ID_Area</td>
+                            <td>@inc.Estado</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

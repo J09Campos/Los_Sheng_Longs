@@ -58,60 +58,70 @@
             </li>
 
 
-            <!-- Encabezado -->
+            @if (User.IsInRole("ADM"))
+            {
 
-            <li class="nav-item sidebar-heading">
-                <span>Mantenimientos</span>
-            </li>
+                <!-- Encabezado -->
 
-            <!-- Menú Desplegable -->
+                <li class="nav-item sidebar-heading">
+                    <span>Mantenimientos</span>
+                </li>
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsuarios" aria-expanded="true" aria-controls="collapseUsuarios">
-                    <i class="fas fa-fw fa-folder"></i>
+                <!-- Menú Desplegable -->
 
-                    <span>Catálogos</span>
-                </a>
-                <div id="collapseUsuarios" class="collapse" aria-labelledby="headingUsuarios"
-                     data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Administración:</h6>
-                        <a class="collapse-item" asp-page="/Roles/Index">Administración de Roles</a>
-                        <a class="collapse-item" asp-page="/TiposIdentificacion/Index">Administración de Tipos de Identificación</a>
-                        <a class="collapse-item" asp-page="/Areas/Index">Administración de Áreas</a>
-                        <a class="collapse-item" asp-page="/Motivos_Ausencia/Index">Administración de Motivos</a>
-                        <a class="collapse-item" asp-page="/Tipos_Inconsistencias/Index">Administración de Tipos de Inconsistencia</a>
+
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsuarios" aria-expanded="true" aria-controls="collapseUsuarios">
+                        <i class="fas fa-fw fa-folder"></i>
+
+                        <span>Catálogos</span>
+                    </a>
+                    <div id="collapseUsuarios" class="collapse" aria-labelledby="headingUsuarios"
+                         data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">Administración:</h6>
+                            <a class="collapse-item" asp-page="/Roles/Index">Administración de Roles</a>
+                            <a class="collapse-item" asp-page="/TiposIdentificacion/Index">Administración de Tipos de Identificación</a>
+                            <a class="collapse-item" asp-page="/Areas/Index">Administración de Áreas</a>
+                            <a class="collapse-item" asp-page="/Motivos_Ausencia/Index">Administración de Motivos</a>
+                            <a class="collapse-item" asp-page="/Inconsistencias/Index">Administración de Tipos de Inconsistencia</a>
+                        </div>
                     </div>
-                </div>
-            </li>
+                </li>
 
+            }
             <!-- Menú Despegable - Funcionarios -->
+            @if (User.IsInRole("ADM"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFuncionarios" aria-expanded="true" aria-controls="collapseFuncionarios ">
+                        <i class="fas fa-fw fa-users"></i>
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFuncionarios" aria-expanded="true" aria-controls="collapseFuncionarios ">
-                    <i class="fas fa-fw fa-users"></i>
+                        <span>Funcionarios</span>
+                    </a>
+                    <div id="collapseFuncionarios" class="collapse" aria-labelledby="headingFuncionarios"
+                         data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">Gestión de Funcionarios:</h6>
+                            <a class="collapse-item" asp-page="/Funcionarios/Index">Administración de Funcionarios</a>
 
-                    <span>Funcionarios</span>
-                </a>
-                <div id="collapseFuncionarios" class="collapse" aria-labelledby="headingFuncionarios"
-                     data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Gestión de Funcionarios:</h6>
-                        <a class="collapse-item" asp-page="/Funcionarios/Index">Administración de Funcionarios</a>
-
+                        </div>
                     </div>
-                </div>
-            </li>
+                </li>
 
 
-            <li class="nav-item">
-                <hr class="sidebar-divider" />
-            </li>
+                <li class="nav-item">
+                    <hr class="sidebar-divider" />
+                </li>
 
+            }
 
             <li class="nav-item sidebar-heading">
                 <span>Reportes</span>
             </li>
+            
+
 
 
 

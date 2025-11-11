@@ -31,16 +31,19 @@ namespace Reloj_Marcador.Repository
             parameters.Add("p_Contrasena", contrasenaCifrada, DbType.String, ParameterDirection.Input);
             parameters.Add("p_Mensaje", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
             parameters.Add("p_Nombre_Completo", dbType: DbType.String, size: 100, direction: ParameterDirection.Output);
+            parameters.Add("p_ID_Rol", dbType: DbType.String, size: 3, direction: ParameterDirection.Output);
 
             await connection.ExecuteAsync("SP_Login_Usuario", parameters, commandType: CommandType.StoredProcedure);
 
             string mensaje = parameters.Get<string>("p_Mensaje");
             string? nombreCompleto = parameters.Get<string>("p_Nombre_Completo");
+            string? rol = parameters.Get<string>("p_ID_Rol");
 
             return new Login
             {
                 Identificacion = usuario,
                 Nombre_Completo = nombreCompleto ?? string.Empty,
+                Rol = rol ?? string.Empty,
                 Contrasena = contrasenaCifrada,
                 Mensaje = mensaje
             };
@@ -50,6 +53,7 @@ namespace Reloj_Marcador.Repository
         private static readonly string Key = "0123456789abcdef";
         private static readonly string IV = "abcdef0123456789";
 
+        // Método  para Encriptar
 
         public static string Encrypt(string plainText)
         {
@@ -75,6 +79,8 @@ namespace Reloj_Marcador.Repository
                 return base64.Replace('+', '-').Replace('/', '_').Replace("=", "");
             }
         }
+
+        // Método para Desencriptar
 
         public static string Decrypt(string cipherText)
         {

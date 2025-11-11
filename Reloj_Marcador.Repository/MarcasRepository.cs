@@ -34,37 +34,35 @@ namespace Reloj_Marcador.Repository
                 return lista;
             }
         }
-        public async Task<(bool Resultado , string Mensaje)> ValidateUser(Marcas marca)
+        public async Task<(bool Resultado, string Mensaje)> ValidateUser(Marcas marca)
         {
             using (var connection = _dbConnectionFactory.CreateConnection())
             {
                 var parametros = new DynamicParameters();
-                parametros.Add("p_Usuario", marca.Identificacion, DbType.String, ParameterDirection.Input);
+                parametros.Add("p_Usuario", marca.Identificacion, DbType.String);
+                parametros.Add("p_Contrasena", Encrypt(marca.Contrasena), DbType.String);
+                parametros.Add("p_Id_Area", marca.Id_Area, DbType.String);
+                parametros.Add("p_Descripcion", marca.Descripcion, DbType.String);
+                parametros.Add("p_Tipo_Marca", marca.Tipo_Marca, DbType.String);
+                parametros.Add("p_Fecha", marca.Fecha, DbType.Date);
+                parametros.Add("p_Hora_Servidor", marca.Hora_Servidor, DbType.Time);
 
-                string ContraEncritada = Encrypt(marca.Contrasena);
-
-                parametros.Add("p_Contrasena", ContraEncritada, DbType.String, ParameterDirection.Input);
-                parametros.Add("p_Id_Area", marca.Id_Area, DbType.String, ParameterDirection.Input);
-                parametros.Add("p_Descripcion", marca.Descripcion, DbType.String, ParameterDirection.Input);
-                parametros.Add("p_Tipo_Marca", marca.Tipo_Marca, DbType.String, ParameterDirection.Input);
-
+                // NUEVOS CAMPOS
+                parametros.Add("p_IP_Registro", marca.IP_Registro, DbType.String);
+                parametros.Add("p_Latitud", marca.Latitud, DbType.Double);
+                parametros.Add("p_Longitud", marca.Longitud, DbType.Double);
 
                 parametros.Add("p_Mensaje", dbType: DbType.String, size: 50, direction: ParameterDirection.Output);
                 parametros.Add("p_Resultado", dbType: DbType.Boolean, direction: ParameterDirection.Output);
 
-                await connection.QueryAsync<Area>(
-                    "SP_Marcar_Entrada_Salida",
-                    parametros,
-                    commandType: System.Data.CommandType.StoredProcedure
-                );
+                await connection.ExecuteAsync("SP_Marcar_Entrada_Salida", parametros, commandType: CommandType.StoredProcedure);
 
                 string mensaje = parametros.Get<string>("p_Mensaje");
-                byte resultadoByte = parametros.Get<byte>("p_Resultado");
-                bool resultado = resultadoByte == 1;
-                return (Convert.ToBoolean(resultado), mensaje);
-
+                bool resultado = parametros.Get<byte>("p_Resultado") == 1;
+                return (resultado, mensaje);
             }
         }
+
         private static readonly string Key = "0123456789abcdef";  
         private static readonly string IV = "abcdef0123456789";   
 
@@ -93,6 +91,46 @@ namespace Reloj_Marcador.Repository
             }
         }
 
+
+
+        public async Task<IEnumerable<MarcasReporte>> GetMarcasReporteAsync(DateTime? fechaInicio, DateTime? fechaFin, string? identificacion)
+        {
+            using var connection = _dbConnectionFactory.CreateConnection();
+
+            string sql = @"
+        SELECT ID_Marca, Identificacion, ID_Area AS Id_Area, Tipo_Marca, Fecha,
+            Hora_Servidor,IP_Registro, Latitud,Longitud FROM marcas
+        WHERE (@fechaInicio IS NULL OR Fecha >= @fechaInicio)
+          AND (@fechaFin IS NULL OR Fecha <= @fechaFin)
+          AND (@identificacion IS NULL OR Identificacion = @identificacion)
+        ORDER BY Fecha DESC, Hora_Servidor DESC;";
+
+            return await connection.QueryAsync<MarcasReporte>(sql, new
+            {
+                fechaInicio,
+                fechaFin,
+                identificacion
+            });
+        }
+
+        public async Task<IEnumerable<Marcas>> GetMarcasAsync(DateTime? inicio, DateTime? fin, string? funcionario)
+        {
+            using var connection = _dbConnectionFactory.CreateConnection();
+
+            string sql = @"
+        SELECT Id_Marca,Identificacion,Id_Area,Descripcion,Tipo_Marca,Hora_Servidor, Fecha, IP_Registro, Latitud, Longitud
+        FROM marcas WHERE (@inicio IS NULL OR Fecha >= @inicio) AND (@fin IS NULL OR Fecha <= @fin) AND (@funcionario IS NULL OR Identificacion = @funcionario)
+        ORDER BY Fecha DESC;";
+
+            var result = await connection.QueryAsync<Marcas>(sql, new
+            {
+                inicio,
+                fin,
+                funcionario
+            });
+
+            return result;
+        }
 
 
 

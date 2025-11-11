@@ -1,0 +1,157 @@
+﻿@page
+@model Reloj_Marcador.Pages.Marcas.IndexModel
+@{
+    ViewData["Title"] = "Reporte de Marcas Realizadas";
+    Layout = "_Layout";
+}
+
+<h1 class="text-primary mb-4"><i class="fas fa-clock mr-2"></i> Reporte de Marcas Realizadas</h1>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger shadow-sm">
+        <i class="fas fa-exclamation-circle mr-2"></i> @TempData["Error"]
+    </div>
+}
+@if (TempData["Info"] != null)
+{
+    <div class="alert alert-info shadow-sm">
+        <i class="fas fa-info-circle mr-2"></i> @TempData["Info"]
+    </div>
+}
+
+<form method="get" class="mb-4">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label font-weight-bold">Fecha inicio</label>
+            <input type="date" name="Inicio" value="@Model.Inicio?.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label font-weight-bold">Fecha fin</label>
+            <input type="date" name="Fin" value="@Model.Fin?.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label font-weight-bold">Funcionario</label>
+            <input type="text" name="Funcionario" value="@Model.Funcionario" class="form-control" placeholder="Identificación" />
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-search mr-1"></i> Buscar
+            </button>
+        </div>
+    </div>
+</form>
+
+<hr />
+
+<h3 class="text-secondary mb-3"><i class="fas fa-list mr-2"></i> Resultados</h3>
+
+@if (Model.Marcas == null || !Model.Marcas.Any())
+{
+    <div class="alert alert-info shadow-sm">
+        <i class="fas fa-info-circle mr-2"></i> No se encontraron marcas para los filtros seleccionados.
+    </div>
+}
+else
+{
+    <div class="table-responsive mb-5">
+        <table class="table table-bordered table-hover shadow-sm">
+            <thead style="background-color: #36404a; color: white;">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Funcionario</th>
+                    <th>Área</th>
+                    <th>Tipo</th>
+                    <th>IP</th>
+                    <th>Latitud</th>
+                    <th>Longitud</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var m in Model.Marcas)
+                {
+                    <tr>
+                        <td>@m.Fecha?.ToString("yyyy-MM-dd")</td>
+                        <td>@m.Hora_Servidor?.ToString(@"hh\:mm")</td>
+                        <td>@m.Identificacion</td>
+                        <td>@m.Id_Area</td>
+                        <td>@m.Tipo_Marca</td>
+                        <td>@m.IP_Registro</td>
+                        <td>@m.Latitud</td>
+                        <td>@m.Longitud</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <h3 class="text-primary mb-3">
+        <i class="fas fa-map-marker-alt mr-2"></i> Ubicación de Marcas
+    </h3>
+
+    <div id="map" style="height: 500px; border-radius: 10px; border: 2px solid #ccc;"></div>
+}
+
+@section Scripts {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        
+        var map = L.map('map').setView([9.8644, -83.9194], 13);
+
+       
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+       
+        var marcas = [
+            @foreach (var marca in Model.Marcas)
+            {
+                    <text>{
+                        lat: @marca.Latitud,
+                        lng: @marca.Longitud,
+                        usuario: "@marca.Identificacion",
+                        area: "@marca.Id_Area",
+                        tipo: "@marca.Tipo_Marca",
+                        fecha: "@marca.Fecha?.ToString("yyyy-MM-dd")",
+                        hora: "@marca.Hora_Servidor?.ToString(@"hh\:mm")",
+                        ip: "@marca.IP_Registro"
+                    },</text>
+            }
+        ];
+
+     
+        marcas.forEach(m => {
+            if (m.lat && m.lng) {
+               
+                L.circle([m.lat, m.lng], {
+                    color: 'blue',
+                    fillColor: '#3f6cf4',
+                    fillOpacity: 0.25,
+                    radius: 100
+                }).addTo(map);
+
+              
+                L.marker([m.lat, m.lng])
+                    .addTo(map)
+                    .bindPopup(`
+                        <b>Usuario:</b> ${m.usuario}<br>
+                        <b>Área:</b> ${m.area}<br>
+                        <b>Tipo:</b> ${m.tipo}<br>
+                        <b>Fecha:</b> ${m.fecha}<br>
+                        <b>Hora:</b> ${m.hora}<br>
+                        <b>IP:</b> ${m.ip}
+                    `);
+            }
+        });
+
+      
+        if (marcas.length > 0) {
+            var bounds = L.latLngBounds(marcas.map(m => [m.lat, m.lng]));
+            map.fitBounds(bounds);
+        }
+    </script>
+}

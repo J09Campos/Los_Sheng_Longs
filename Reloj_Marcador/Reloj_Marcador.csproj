@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Reloj_Marcador.Entities\Reloj_Marcador.Entities.csproj" />
     <ProjectReference Include="..\Reloj_Marcador.Repository\Reloj_Marcador.Repository.csproj" />
     <ProjectReference Include="..\Reloj_Marcador.Services\Reloj_Marcador.Services.csproj" />
   </ItemGroup>

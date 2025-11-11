@@ -18,6 +18,7 @@ namespace Reloj_Marcador.Pages.Login
             _loginService = loginService;
         }
 
+        // Inputs del Usuario de los Txt
 
         [BindProperty]
         public string Usuario { get; set; } = string.Empty;
@@ -53,7 +54,8 @@ namespace Reloj_Marcador.Pages.Login
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, resultado.Nombre_Completo ?? Usuario),
-                    new Claim("Usuario", resultado.Identificacion)
+                    new Claim("Usuario", resultado.Identificacion),
+                    new Claim(ClaimTypes.Role, resultado.Rol ?? "USR")
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

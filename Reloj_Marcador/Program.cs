@@ -1,48 +1,38 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Reloj_Marcador;
 using Reloj_Marcador.Repository;
 using Reloj_Marcador.Services;
 using Reloj_Marcador.Services.Abstract;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Logging.SetMinimumLevel(LogLevel.Information);
 builder.Services.AddRazorPages();
-
-// Necesario para obtener usuario logueado
 builder.Services.AddHttpContextAccessor();
-
-// Bitacora
 
 builder.Services.AddScoped<BitacoraRepository>();
 builder.Services.AddScoped<IBitacoraService, BitacoraService>();
 
-//Funcionarios
-builder.Services.AddScoped<FuncionariosRepository>();
-builder.Services.AddScoped<IFuncionariosService, FuncionariosServices>();
 builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
 
-//Áreas
+builder.Services.AddScoped<FuncionariosRepository>();
+builder.Services.AddScoped<IFuncionariosService, FuncionariosServices>();
+
 builder.Services.AddScoped<AreaRepository>();
 builder.Services.AddScoped<IAreaService, AreaServices>();
 
-//Login
 builder.Services.AddScoped<LoginRepository>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 
-//Marcas
 builder.Services.AddScoped<MarcasRepository>();
 builder.Services.AddScoped<IMarcasService, MarcasService>();
 
-//Inconsistencias
 builder.Services.AddScoped<InconsistenciasRepository>();
-builder.Services.AddScoped<IInconsistenciasService, InconsisteciasService>();
+builder.Services.AddScoped<IInconsistenciasService, InconsistenciasService>();
 
-//Roles
 builder.Services.AddScoped<RolesRepository>();
 builder.Services.AddScoped<IRolesService, RolesService>();
 
-//Tipos Identificacion
 builder.Services.AddScoped<TiposIdentificacionRepository>();
 builder.Services.AddScoped<ITiposIdentificacionService, TiposIdentificacionService>();
 
@@ -55,9 +45,10 @@ builder.Services.AddScoped<IHorarioService, HorarioService>();
 builder.Services.AddScoped<MotivoRepository>();
 builder.Services.AddScoped<IMotivoService, MotivoService>();
 
-builder.Services.AddDistributedMemoryCache();
+builder.Services.AddScoped<Proc1Repository>();
+builder.Services.AddScoped<Proc1Service>();
+builder.Services.AddHostedService<Proc1HostedService>();
 
-// Configurar la sesión
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -70,10 +61,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         {
             OnRedirectToLogin = ctx =>
             {
-
                 var returnUrl = ctx.Request.Path;
-
-                // Si existe la cookie en el request pero el usuario no está autenticado va a ser expirada
 
                 if (ctx.Request.Cookies.ContainsKey(".AspNetCore.Cookies") &&
                     (ctx.HttpContext.User?.Identity == null || !ctx.HttpContext.User.Identity.IsAuthenticated))
@@ -86,32 +74,27 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                 }
 
                 return Task.CompletedTask;
-
             }
         };
     });
 
+builder.Services.AddDistributedMemoryCache();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
 }
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthentication();
-
 app.UseAuthorization();
-
 app.MapRazorPages();
-
+app.MapProc1Endpoints();
 app.MapGet("/", context =>
 {
     context.Response.Redirect("/Login/Login");
     return Task.CompletedTask;
 });
-
 app.Run();

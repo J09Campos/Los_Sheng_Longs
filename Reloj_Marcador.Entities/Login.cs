@@ -14,6 +14,7 @@ namespace Reloj_Marcador.Entities
         public string? Identificacion { get; set; }
         public string? Nombre_Completo { get; set; }
         public string? Contrasena { get; set; }
+        public string? Rol { get; set; }
         public string? Mensaje { get; set; }
 
 
