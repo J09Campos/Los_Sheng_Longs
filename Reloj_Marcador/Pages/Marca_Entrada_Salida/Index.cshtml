@@ -73,6 +73,9 @@
         </div>
     </div>
 </div>
+<input type="hidden" id="IP_Registro" name="IP_Registro" />
+<input type="hidden" id="Latitud" name="Latitud" />
+<input type="hidden" id="Longitud" name="Longitud" />
 
 @section Scripts {
     <script>
@@ -99,5 +102,29 @@
                 })
                 .catch(error => console.error(error));
         });
+
+
+        fetch('https://api.ipify.org?format=json')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('IP_Registro').value = data.ip;
+            })
+            .catch(err => console.error("Error obteniendo IP:", err));
+
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    document.getElementById('Latitud').value = position.coords.latitude;
+                    document.getElementById('Longitud').value = position.coords.longitude;
+                },
+                (error) => {
+                    console.error("Error obteniendo ubicación:", error);
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        } else {
+            console.error("Geolocalización no soportada por el navegador.");
+        }
     </script>
 }

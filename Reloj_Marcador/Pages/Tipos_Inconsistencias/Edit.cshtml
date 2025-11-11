@@ -1,0 +1,57 @@
+﻿@page
+@model Reloj_Marcador.Pages.Tipos_Inconsistencias.EditModel
+@{
+    ViewData["Title"] = "Editar Tipo Inconsistencias";
+}
+
+<h1>Actualizar Tipo Inconsistencias</h1>
+
+<h4>Persona</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="Inconsistencia.Id_Inconsistencia" class="control-label">ID Inconsistencia</label>
+                <input asp-for="Inconsistencia.Id_Inconsistencia" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="Inconsistencia.Nombre_Inconsistencia" class="control-label"> Nombre Inconsistencia</label>
+                <input asp-for="Inconsistencia.Nombre_Inconsistencia" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Salvar" class="btn btn-primary" />
+                <a asp-page="Index" class="btn btn-secondary">Volver</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="systemMessageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">@TempData.Peek("ModalTitle")</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @TempData.Peek("ModalMessage")
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var modalMessage = "@(TempData["ModalMessage"] ?? "")";
+            if (modalMessage.length > 0) {
+                $("#systemMessageModal").modal("show");
+            }
+        });
+    </script>
+}

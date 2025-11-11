@@ -48,9 +48,10 @@ namespace Reloj_Marcador.Repository
                 parametros.Add("p_Hora_Servidor", marca.Hora_Servidor, DbType.Time);
 
                 // NUEVOS CAMPOS
-                parametros.Add("p_IP_Registro", marca.IP_Registro, DbType.String);
-                parametros.Add("p_Latitud", marca.Latitud, DbType.Double);
-                parametros.Add("p_Longitud", marca.Longitud, DbType.Double);
+                parametros.Add("p_IP_Registro", marca.IP_Registro, DbType.String, ParameterDirection.Input);
+                parametros.Add("p_Latitud", marca.Latitud, DbType.Double, ParameterDirection.Input);
+                parametros.Add("p_Longitud", marca.Longitud, DbType.Double, ParameterDirection.Input);
+
 
                 parametros.Add("p_Mensaje", dbType: DbType.String, size: 50, direction: ParameterDirection.Output);
                 parametros.Add("p_Resultado", dbType: DbType.Boolean, direction: ParameterDirection.Output);
@@ -63,8 +64,8 @@ namespace Reloj_Marcador.Repository
             }
         }
 
-        private static readonly string Key = "0123456789abcdef";  
-        private static readonly string IV = "abcdef0123456789";   
+        private static readonly string Key = "0123456789abcdef";
+        private static readonly string IV = "abcdef0123456789";
 
         public static string Encrypt(string plainText)
         {
@@ -131,8 +132,5 @@ namespace Reloj_Marcador.Repository
 
             return result;
         }
-
-
-
     }
 }

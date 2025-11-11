@@ -36,6 +36,9 @@ builder.Services.AddScoped<IRolesService, RolesService>();
 builder.Services.AddScoped<TiposIdentificacionRepository>();
 builder.Services.AddScoped<ITiposIdentificacionService, TiposIdentificacionService>();
 
+builder.Services.AddScoped<Tipos_InconsistenciasRepository>();
+builder.Services.AddScoped<ITiposInconsistenciasService, Tipos_InconsistenciasService>();
+
 builder.Services.AddScoped<DetalleHorarioRepository>();
 builder.Services.AddScoped<IDetalleHorarioService, DetalleHorarioService>();
 
